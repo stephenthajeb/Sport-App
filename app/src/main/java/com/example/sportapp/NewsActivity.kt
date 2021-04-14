@@ -53,17 +53,15 @@ class NewsActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
         adapter.setOnItemClickCallback(object : NewsAdapter.OnItemClickCallback {
             override fun onItemClicked(data: News) {
+                Toast.makeText(this@NewsActivity,data.title,Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@NewsActivity, NewsDetailActivity::class.java)
                 intent.putExtra(EXTRA_URL, data.url)
                 startActivity(intent)
             }
         })
         val orientation = resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.rvNews.layoutManager = GridLayoutManager(this, 4)
-        } else {
-            binding.rvNews.layoutManager = GridLayoutManager(this, 2)
-        }
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) 2 else 1
+        binding.rvNews.layoutManager = GridLayoutManager(this, spanCount)
         binding.rvNews.adapter = adapter
     }
 
