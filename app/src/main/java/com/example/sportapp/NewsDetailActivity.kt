@@ -7,7 +7,6 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.example.sportapp.databinding.ActivityNewsBinding
 import com.example.sportapp.databinding.ActivityNewsDetailBinding
 
 class NewsDetailActivity : AppCompatActivity() {

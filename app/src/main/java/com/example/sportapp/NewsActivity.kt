@@ -36,15 +36,12 @@ class NewsActivity : AppCompatActivity() {
             fetchNews()
         } else {
             val newsList = savedInstanceState.getParcelableArrayList<News>(EXTRA_STATE)
-            Log.d("load",newsList.toString())
             newsList?.let { adapter.setNewsData(it) }
         }
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d("onSave",adapter.getNewsList().size.toString())
         outState.putParcelableArrayList(EXTRA_STATE, adapter.getNewsList())
     }
 
@@ -66,7 +63,6 @@ class NewsActivity : AppCompatActivity() {
     }
 
     private fun fetchNews() {
-        Log.d("test", "tabcasd")
         val newsList = ArrayList<News>()
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "request")
@@ -118,7 +114,6 @@ class NewsActivity : AppCompatActivity() {
                     else -> "$statusCode : ${error.message}"
                 }
                 Toast.makeText(this@NewsActivity, errorMessage, Toast.LENGTH_SHORT).show()
-                Log.d("getUserDetailError", errorMessage)
             }
         })
     }
@@ -150,6 +145,4 @@ class NewsActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
-
 }
