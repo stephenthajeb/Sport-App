@@ -11,7 +11,11 @@ class TrainingTrackerFragmentAdapter(activity: AppCompatActivity) : FragmentStat
     }
 
     override fun createFragment(position: Int): Fragment {
-        return TrainingTrackerFragment.newInstance(position)
+        var fragment: Fragment? = null
+        when (position){
+            0->fragment = RunningTrackerFragment()
+            1->fragment = RecyclingTrackerFragment()
+        }
     }
 
 }
