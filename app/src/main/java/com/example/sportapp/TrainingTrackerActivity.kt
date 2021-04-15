@@ -24,8 +24,8 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
 
     companion object {
         private var TAB_TITLES = arrayOf(
-            TrainingTrackerFragment.RUNNING_MODE,
-            TrainingTrackerFragment.CYCLING_MODE,
+            "Running",
+            "Cycling",
         )
     }
 

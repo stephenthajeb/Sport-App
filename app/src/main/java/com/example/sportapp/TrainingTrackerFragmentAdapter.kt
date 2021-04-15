@@ -16,6 +16,6 @@ class TrainingTrackerFragmentAdapter(activity: AppCompatActivity) : FragmentStat
             0->fragment = RunningTrackerFragment()
             1->fragment = RecyclingTrackerFragment()
         }
+        return fragment as Fragment
     }
-
 }
