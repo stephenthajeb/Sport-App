@@ -14,14 +14,26 @@
             android:id="@+id/tv_training_mode_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:drawableTop="@drawable/ic_baseline_directions_run_50"
+            app:layout_constraintBottom_toTopOf="@+id/tv_progress"
             android:gravity="center"
             android:text="Running Mode"
-            app:layout_constraintBottom_toTopOf="@+id/btn_container" />
+         />
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 steps"
+            android:textSize="40sp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ll_btn_container"
+            />
 
         <LinearLayout
-            android:id="@+id/btn_container"
+            android:id="@+id/ll_btn_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -29,10 +41,10 @@
             android:weightSum="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.499"
             tools:layout_editor_absoluteX="71dp">
 
             <Button
+                android:id="@+id/btn_training"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -40,5 +52,6 @@
                 android:textSize="20dp"
                 android:textStyle="bold" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

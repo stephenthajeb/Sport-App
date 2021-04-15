@@ -22,8 +22,6 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
     private val rotationMatrix = FloatArray(9)
     private val orientationAngles = FloatArray(3)
 
-
-
     companion object {
         private var TAB_TITLES = arrayOf(
             TrainingTrackerFragment.RUNNING_MODE,
@@ -93,10 +91,7 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        //ToDo: register listener on another thread
-        if (event == null) {
-            return
-        }
+        //ToDo: register listener on another thread using service
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
         } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
