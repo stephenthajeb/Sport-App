@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/schedule_main_navigaation"
+    app:startDestination="@id/schedulerMainFragment">
+
+    <fragment
+        android:id="@+id/schedulerMainFragment"
+        android:name="com.example.sportapp.SchedulerMainFragment"
+        android:label="fragment_scheduler_main"
+        tools:layout="@layout/fragment_scheduler_main" >
+        <action
+            android:id="@+id/action_schedulerMainFragment_to_schedulerAddFragment"
+            app:destination="@id/schedulerAddFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/schedulerMainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/schedulerAddFragment"
+        android:name="com.example.sportapp.SchedulerAddFragment"
+        android:label="fragment_scheduler_add"
+        tools:layout="@layout/fragment_scheduler_add" >
+        <action
+            android:id="@+id/action_schedulerAddFragment_to_schedulerMainFragment"
+            app:destination="@id/schedulerMainFragment" />
+    </fragment>
+</navigation>

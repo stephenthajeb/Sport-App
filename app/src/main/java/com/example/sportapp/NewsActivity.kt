@@ -133,6 +133,14 @@ class NewsActivity : AppCompatActivity() {
                     val intent = Intent(this, TrainingTrackerActivity::class.java)
                     startActivity(intent)
                 }
+                R.id.nav_history->{
+                    val intent = Intent(this,HistoryActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_scheduler->{
+                    val intent = Intent(this,SchedulerActivity::class.java)
+                    startActivity(intent)
+                }
             }
             return@setOnNavigationItemSelectedListener true
         }

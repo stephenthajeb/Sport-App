@@ -16,10 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SportApp">
+        <activity android:name=".SchedulerActivity"></activity>
+        <activity android:name=".HistoryActivity" />
+
         <service
             android:name=".RunningTrackerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <receiver
             android:name=".TrainingTrackingReceiver"
