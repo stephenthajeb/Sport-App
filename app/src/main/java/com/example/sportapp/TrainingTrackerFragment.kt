@@ -1,6 +1,6 @@
 package com.example.sportapp
 
-
+//Todo: Delete this file later
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent

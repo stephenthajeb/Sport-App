@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
-
+//Todo: Delete this file later
 class TrainingTrackerServices : Service(), SensorEventListener {
     private lateinit var sensorManager : SensorManager
     private var isForeground : Boolean = false

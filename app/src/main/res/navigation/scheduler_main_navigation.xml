@@ -27,5 +27,17 @@
         <action
             android:id="@+id/action_schedulerAddFragment_to_schedulerMainFragment"
             app:destination="@id/schedulerMainFragment" />
+        <action
+            android:id="@+id/action_schedulerAddFragment_to_schedulerAddDetailFragment"
+            app:destination="@id/schedulerAddDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/schedulerAddDetailFragment"
+        android:name="com.example.sportapp.SchedulerAddDetailFragment"
+        android:label="fragment_scheduler_add_detail"
+        tools:layout="@layout/fragment_scheduler_add_detail" >
+        <action
+            android:id="@+id/action_schedulerAddDetailFragment_to_schedulerAddFragment"
+            app:destination="@id/schedulerAddFragment" />
     </fragment>
 </navigation>

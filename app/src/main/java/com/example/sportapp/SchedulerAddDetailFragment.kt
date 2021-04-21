@@ -7,25 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.example.sportapp.databinding.FragmentSchedulerAddBinding
-import com.example.sportapp.databinding.FragmentSchedulerMainBinding
+import com.example.sportapp.databinding.FragmentSchedulerAddDetailBinding
 
-class SchedulerAddFragment : Fragment() {
-    private var binding: FragmentSchedulerAddBinding? = null
+class SchedulerAddDetailFragment : Fragment() {
+    private var binding: FragmentSchedulerAddDetailBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentSchedulerAddBinding.inflate(inflater, container, false)
+        binding = FragmentSchedulerAddDetailBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.btnNext?.setOnClickListener{
-            it.findNavController().navigate(R.id.action_schedulerAddFragment_to_schedulerAddDetailFragment)
-        }
+        binding?.btnPrev?.setOnClickListener{
+            it.findNavController().navigate(R.id.action_schedulerAddDetailFragment_to_schedulerAddFragment) }
 
     }
 
