@@ -12,7 +12,7 @@ import androidx.navigation.findNavController
 import com.example.sportapp.databinding.ActivityNewsBinding
 import com.example.sportapp.databinding.ActivitySchedulerBinding
 
-class SchedulerActivity : AppCompatActivity() {
+class SchedulerActivity : AppCompatActivity(){
     private lateinit var adapter: ScheduleAdapter
     private lateinit var binding: ActivitySchedulerBinding
 
@@ -54,4 +54,6 @@ class SchedulerActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
     }
+
+
 }

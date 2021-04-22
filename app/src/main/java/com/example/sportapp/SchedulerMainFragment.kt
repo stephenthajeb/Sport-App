@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +18,6 @@ class SchedulerMainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentSchedulerMainBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -31,7 +31,10 @@ class SchedulerMainFragment : Fragment() {
     private fun btnOnClickListener(){
         //Alternative 1
         binding?.fabAddNewSchedule?.setOnClickListener{
-            it.findNavController().navigate(R.id.action_schedulerMainFragment_to_schedulerAddFragment)
+            //it.findNavController().navigate(R.id.action_schedulerMainFragment_to_schedulerAddFragment)
+            //Todo: change to using navgraph
+            val intent = Intent(context,SchedulerAddActivity::class.java)
+            startActivity(intent)
         }
 
         //Alternative 2

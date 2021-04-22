@@ -16,9 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SportApp">
-        <activity android:name=".SchedulerActivity"></activity>
-        <activity android:name=".HistoryActivity" />
-
         <service
             android:name=".RunningTrackerService"
             android:enabled="true"
@@ -33,7 +30,12 @@
             android:name=".TrainingTrackerServices"
             android:enabled="true"
             android:exported="true" />
-
+        <activity
+            android:name=".SchedulerAddActivity"
+            android:label="Add new Schedule"
+            />
+        <activity android:name=".SchedulerActivity" />
+        <activity android:name=".HistoryActivity" />
         <activity android:name=".NewsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

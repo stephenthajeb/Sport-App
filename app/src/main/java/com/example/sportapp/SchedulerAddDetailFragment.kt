@@ -22,7 +22,10 @@ class SchedulerAddDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        //binding?.btnPrev?.setOnClickListener{
+        //    //it.findNavController().navigate(R.id.action_schedulerAddDetailFragment_to_schedulerAddFragment)
+        //    fragmentManager?.popBackStackImmediate()
+        //}
 
     }
 

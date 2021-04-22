@@ -1,31 +1,29 @@
 package com.example.sportapp
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.navigation.findNavController
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.example.sportapp.databinding.FragmentSchedulerAddBinding
 
-class SchedulerAddFragment : Fragment() {
+
+class SchedulerAddFragment : Fragment(), DatePickerFragment.DialogDateListener, TimePickerFragment.DialogTimeListener{
     private var binding: FragmentSchedulerAddBinding? = null
     private var schedule: Schedule? = null
 
     companion object {
-        const val FREQ_ONCE = "once"
-        const val FREQ_EVERYDAY = "everyday"
-        const val FREQ_CUSTOM = "custom"
+        const val RUNNING = "RUNNING"
+        const val CYCLING = "CYCLING"
+        const val FREQ_ONCE = "ONCE"
+        const val FREQ_EVERYDAY = "EVERYDAY"
+        const val FREQ_CUSTOM = "CUSTOM"
+        private const val DATE_PICKER_TAG = "DatePicker"
+        private const val TIME_PICKER_START_TAG = "TimePickerStart"
+        private const val TIME_PICKER_END_TAG = "TimePickerEnd"
         const val EXTRA_SCHEDULE = "Schedule"
-        const val RUNNING = "running"
-        const val CYCLING = "cycling"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("test","oncreate")
     }
 
     override fun onCreateView(
@@ -34,13 +32,14 @@ class SchedulerAddFragment : Fragment() {
     ): View? {
         binding = FragmentSchedulerAddBinding.inflate(inflater, container, false)
         setInitialInputValue(savedInstanceState)
-        Log.d("test","on create view")
+        setUpBtnListener()
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("test","on view created")
+        //Log.d("test","on view created")
+
         //binding?.btnNext?.setOnClickListener {
         //    val tempMode = binding?.rgMode?.checkedRadioButtonId //return -1 if none checked
         //    val tempFreq = binding?.rgFreq?.checkedRadioButtonId
@@ -65,32 +64,32 @@ class SchedulerAddFragment : Fragment() {
         //}
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        Log.d("test","on activity create")
-    }
-
-
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("test","on save instance")
         super.onSaveInstanceState(outState)
-        outState.putParcelable(EXTRA_SCHEDULE,schedule)
+        outState.putParcelable(EXTRA_SCHEDULE, schedule)
     }
 
-    override fun onPause() {
-        super.onPause()
+    private fun setUpBtnListener(){
+        val binding = binding!!
+        binding.btnDatePicker.setOnClickListener{
+            val datePicker = DatePickerFragment()
+            activity?.supportFragmentManager?.let { it1 -> datePicker.show(it1, DATE_PICKER_TAG) }
+        }
+    }
+
+    override fun onDialogDateSet(tag: String?, year: Int, month: Int, dayOfMonth: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDialogTimeSet(tag: String?, hourOfDay: Int, minute: Int) {
+        TODO("Not yet implemented")
     }
 
     private fun setInitialInputValue(savedInstanceState: Bundle?) {
-        var mode : String? = null
-        var freqMode: String? = null
         savedInstanceState?.let {
-            //isRunningMode = it.getBoolean(EXTRA_MODE)
-            //freqMode = it.getInt(EXTRA_FREQ)
-
+            schedule = it.getParcelable(EXTRA_SCHEDULE)
         }
-        //Log.d("test", isRunningMode.toString())
-
+        //Todo: show in UI
         //isRunningMode?.let {
         //    if (it) binding?.rbRunning?.isChecked = true
         //    else binding?.rbCycling?.isChecked = true
@@ -104,4 +103,6 @@ class SchedulerAddFragment : Fragment() {
         //    }
         //}
     }
+
+
 }
