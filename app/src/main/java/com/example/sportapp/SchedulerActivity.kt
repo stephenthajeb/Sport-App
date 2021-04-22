@@ -3,6 +3,7 @@ package com.example.sportapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
@@ -26,15 +27,17 @@ class SchedulerActivity : AppCompatActivity() {
 
 
     private fun setActiveNavMenu() {
-        val menuItem: MenuItem = binding.bottomNavView.menu.getItem(0)
+        val menuItem: MenuItem = binding.bottomNavView.menu.getItem(3)
         menuItem.isChecked = true
     }
+
 
     private fun menuItemListener() {
         binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_news -> {
-                    return@setOnNavigationItemSelectedListener true
+                    val intent = Intent(this,NewsActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.nav_tracker -> {
                     val intent = Intent(this, TrainingTrackerActivity::class.java)
@@ -45,8 +48,7 @@ class SchedulerActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.nav_scheduler->{
-                    val intent = Intent(this,SchedulerActivity::class.java)
-                    startActivity(intent)
+                    return@setOnNavigationItemSelectedListener true
                 }
             }
             return@setOnNavigationItemSelectedListener true
