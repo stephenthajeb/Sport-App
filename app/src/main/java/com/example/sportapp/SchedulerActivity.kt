@@ -7,6 +7,8 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.example.sportapp.databinding.ActivityNewsBinding
@@ -15,6 +17,9 @@ import com.example.sportapp.databinding.ActivitySchedulerBinding
 class SchedulerActivity : AppCompatActivity(){
     private lateinit var adapter: ScheduleAdapter
     private lateinit var binding: ActivitySchedulerBinding
+    private val scheduleViewModel:ScheduleViewModel by viewModels{
+        ScheduleModelFactory((application as SportApp).scheduleDAO)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +27,13 @@ class SchedulerActivity : AppCompatActivity(){
         setContentView(binding.root)
         setActiveNavMenu()
         menuItemListener()
+        setUpBtnListener()
     }
-
-
 
     private fun setActiveNavMenu() {
         val menuItem: MenuItem = binding.bottomNavView.menu.getItem(3)
         menuItem.isChecked = true
     }
-
 
     private fun menuItemListener() {
         binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
@@ -55,5 +58,15 @@ class SchedulerActivity : AppCompatActivity(){
         }
     }
 
+    private fun setUpBtnListener(){
+        binding?.fabAddNewSchedule?.setOnClickListener{
+            //Todo: Change using navgraph(?)
+            val intent = Intent(this,SchedulerAddActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    //private fun getSchedulesFromDB(){
+    //}
 
 }

@@ -1,6 +1,9 @@
 package com.example.sportapp
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import java.sql.Date
 import java.sql.Time
@@ -16,15 +19,19 @@ import java.sql.Time
     target: if mode == running then this field represent value in step unit, if cycling represent value in km unit
 
  */
-
+@Entity(tableName = "schedule_table")
 @Parcelize
 data class Schedule(
-    var mode: String? = null,//RUNNING
+    var mode: String? = null,
     var frequency: String? = null,
     var date: Date? = null,
     var days: List<Int> = emptyList(),
-    var startTime:Time? = null,
-    var finishTime:Time? = null,
+    var startTime: Time? = null,
+    var finishTime: Time? = null,
     var target: Double? = null,
-    var isAuto: Boolean? = null
-): Parcelable
+    var isAuto: Boolean? = null,
+    //var achive: Boolean = false
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    ) : Parcelable
+
+

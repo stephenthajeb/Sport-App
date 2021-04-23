@@ -157,4 +157,5 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
     }
+
 }

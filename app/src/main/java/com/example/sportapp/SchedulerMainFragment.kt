@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.example.sportapp.databinding.FragmentSchedulerMainBinding
 
@@ -29,18 +30,11 @@ class SchedulerMainFragment : Fragment() {
 
 
     private fun btnOnClickListener(){
-        //Alternative 1
         binding?.fabAddNewSchedule?.setOnClickListener{
-            //it.findNavController().navigate(R.id.action_schedulerMainFragment_to_schedulerAddFragment)
             //Todo: change to using navgraph
             val intent = Intent(context,SchedulerAddActivity::class.java)
             startActivity(intent)
         }
-
-        //Alternative 2
-        //binding.fabAddNewSchedule.setOnClickListener(
-        //    Navigation.createNavigateOnClickListener(R.id.action_schedulerMainFragment_to_schedulerAddFragment)
-        //)
     }
 
 
