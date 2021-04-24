@@ -1,16 +1,20 @@
 package com.example.sportapp
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportapp.databinding.ActivityNewsBinding
 import com.example.sportapp.databinding.ActivitySchedulerBinding
 
@@ -28,6 +32,7 @@ class SchedulerActivity : AppCompatActivity(){
         setActiveNavMenu()
         menuItemListener()
         setUpBtnListener()
+        setUpAdapter()
     }
 
     private fun setActiveNavMenu() {
@@ -60,10 +65,21 @@ class SchedulerActivity : AppCompatActivity(){
 
     private fun setUpBtnListener(){
         binding?.fabAddNewSchedule?.setOnClickListener{
-            //Todo: Change using navgraph(?)
             val intent = Intent(this,SchedulerAddActivity::class.java)
             startActivity(intent)
         }
+    }
+
+
+    private fun setUpAdapter(){
+        adapter = ScheduleAdapter()
+        binding.rvSchedule.adapter = adapter
+        binding.rvSchedule.layoutManager = LinearLayoutManager(this)
+
+        scheduleViewModel.schedules.observe(this){
+            adapter.setData(it as ArrayList<Schedule>)
+        }
+
     }
 
     //private fun getSchedulesFromDB(){
