@@ -1,8 +1,7 @@
 package com.example.sportapp
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -112,10 +111,8 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
             val tempFreq = binding.rgFreq.checkedRadioButtonId
             val tempDays = getCustomDaysSelected()
             val tempTarget = binding.etTarget.text
-            val tempIsAuto = binding.cbIsAuto.isChecked
+            val tempIsAuto = if (binding.cbIsAuto.isChecked) 1 else 0
 
-            Log.d("test", tempDays.toString())
-            Log.d("test",tempTarget.toString())
             var msg = "Schedule Save"
 
             if (tempMode == -1) {
@@ -144,18 +141,21 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
                     frequency = freqMode,
                     target = tempTarget.toString().toDouble(),
                     isAuto = tempIsAuto,
-                    startTime = java.sql.Time(SimpleDateFormat("HH:mm").parse(startTime).time),
-                    finishTime=java.sql.Time(SimpleDateFormat("HH:mm").parse(endTime).time)
+                    startTime = startTime,
+                    finishTime = endTime,
+                    days = tempDays.joinToString(separator = ",")
                 )
-                if (date !== null) schedule.date = java.sql.Date(SimpleDateFormat("yyyy-MM-dd").parse(date).time)
+                if (date !== null) schedule.date = date
 
-                val mBundle = Bundle()
-                mBundle.putParcelable(EXTRA_SCHEDULE, schedule)
-
+                val data = Intent()
+                data.putExtra(EXTRA_SCHEDULE,schedule)
+                setResult(RESULT_OK,data)
+                finish()
             }
             //Todo: save to schedule database, activate job scheduler, alarm manager, redirect to fragment main
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
     }
+
 
 }

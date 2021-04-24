@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import androidx.annotation.WorkerThread
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,8 +12,10 @@ interface ScheduleDAO{
     @Query("SELECT * FROM schedule_table")
     fun getAllSchedules(): Flow<List<Schedule>>
 
-    @Insert(onConflict =  OnConflictStrategy.IGNORE)
-    suspend fun insert(schedule: Schedule) : Int //return the number affected by operation
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(schedule: Schedule):Long
 
     //Todo: delete, getUserById, updateScheduleTargetAchieved() (?)
 }

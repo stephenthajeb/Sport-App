@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
 
     fun getData(): ArrayList<Schedule>? = scheduleList.value
 
-    override fun getItemCount(): Int = scheduleList.value!!.size
+    override fun getItemCount(): Int = scheduleList?.value?.size ?: 0
 
     class ScheduleViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val binding = ItemRowScheduleBinding.bind(itemView)

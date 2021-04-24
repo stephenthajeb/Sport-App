@@ -22,16 +22,15 @@ import java.sql.Time
 @Entity(tableName = "schedule_table")
 @Parcelize
 data class Schedule(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var mode: String? = null,
     var frequency: String? = null,
-    var date: Date? = null,
-    var days: List<Int> = emptyList(),
-    var startTime: Time? = null,
-    var finishTime: Time? = null,
+    var date: String? = null,
+    var days: String? = null,
+    var startTime: String? = null,
+    var finishTime: String? = null,
     var target: Double? = null,
-    var isAuto: Boolean? = null,
-    //var achive: Boolean = false
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    ) : Parcelable
-
+    var isAuto: Int? = null
+    //var isAchive: Int = 0
+) : Parcelable
 

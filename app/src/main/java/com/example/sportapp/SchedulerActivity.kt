@@ -25,6 +25,10 @@ class SchedulerActivity : AppCompatActivity(){
         ScheduleModelFactory((application as SportApp).scheduleDAO)
     }
 
+    companion object{
+        const val REQ_ADD_SCHEDULE = 1
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySchedulerBinding.inflate(layoutInflater)
@@ -66,7 +70,7 @@ class SchedulerActivity : AppCompatActivity(){
     private fun setUpBtnListener(){
         binding?.fabAddNewSchedule?.setOnClickListener{
             val intent = Intent(this,SchedulerAddActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, REQ_ADD_SCHEDULE)
         }
     }
 
@@ -78,11 +82,26 @@ class SchedulerActivity : AppCompatActivity(){
 
         scheduleViewModel.schedules.observe(this){
             adapter.setData(it as ArrayList<Schedule>)
+            adapter.notifyDataSetChanged()
         }
 
+        if (scheduleViewModel.schedules.value?.size == 0){
+            //Todo : show icon indication empty
+            Toast.makeText(this,"No schedules found",Toast.LENGTH_SHORT).show()
+        }
     }
 
-    //private fun getSchedulesFromDB(){
-    //}
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_ADD_SCHEDULE && resultCode == RESULT_OK){
+            val schedule = data?.getParcelableExtra<Schedule>(SchedulerAddActivity.EXTRA_SCHEDULE)
+            try{
+                schedule?.let { scheduleViewModel.insert(schedule = it) }
+                adapter.notifyDataSetChanged()
+            }catch (e:Error){
+                Toast.makeText(this,"Error. Save failed !!",Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }

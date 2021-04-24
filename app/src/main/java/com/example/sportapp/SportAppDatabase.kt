@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
 
-@Database(entities = [Schedule::class,History::class], version = 1, exportSchema = true)
+@Database(entities = [Schedule::class,History::class], version = 1, exportSchema = false)
 abstract class SportAppDatabase: RoomDatabase(){
     abstract fun scheduleDAO() : ScheduleDAO
     companion object {

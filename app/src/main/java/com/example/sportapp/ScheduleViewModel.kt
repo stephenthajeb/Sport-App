@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -8,7 +9,7 @@ class ScheduleViewModel(private val scheduleDAO: ScheduleDAO): ViewModel() {
     val schedules : LiveData<List<Schedule>> = scheduleDAO.getAllSchedules().asLiveData()
 
     fun insert(schedule:Schedule) = viewModelScope.launch {
-        scheduleDAO.insert(schedule)
+        val result = scheduleDAO.insert(schedule)
     }
 }
 
