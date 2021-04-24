@@ -1,22 +1,25 @@
 package com.example.sportapp
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sportapp.databinding.ActivityNewsBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
 
-class NewsActivity : AppCompatActivity() {
+class NewsActivity : AppCompatActivity(),IUseBottomNav {
     private lateinit var adapter: NewsAdapter
     private lateinit var binding: ActivityNewsBinding
 
@@ -29,8 +32,8 @@ class NewsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setActiveNavMenu()
-        menuItemListener()
+        setUpActiveMenu(binding.bottomNavView.menu,0)
+        setUpMenuItemListener(binding.bottomNavView,this,0)
         setUpAdapter()
         if (savedInstanceState==null){
             fetchNews()
@@ -118,33 +121,45 @@ class NewsActivity : AppCompatActivity() {
         })
     }
 
-    private fun setActiveNavMenu() {
-        val menuItem: MenuItem = binding.bottomNavView.menu.getItem(0)
-        menuItem.isChecked = true
+    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
+        super.setUpActiveMenu(menu, pageIdx)
     }
 
-    private fun menuItemListener() {
-        binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_news -> {
-                    return@setOnNavigationItemSelectedListener true
-                }
-                R.id.nav_tracker -> {
-                    val intent = Intent(this, TrainingTrackerActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.nav_history->{
-                    val intent = Intent(this,HistoryActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.nav_scheduler->{
-                    val intent = Intent(this,SchedulerActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-            return@setOnNavigationItemSelectedListener true
-        }
+    override fun setUpMenuItemListener(
+        bottomNav: BottomNavigationView,
+        context: Context,
+        currentPageIdx: Int
+    ) {
+        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
     }
+
+    //private fun setActiveNavMenu() {
+    //    val menuItem: MenuItem = binding.bottomNavView.menu.getItem(0)
+    //    menuItem.isChecked = true
+    //}
+    //
+    //private fun menuItemListener() {
+    //    binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
+    //        when (item.itemId) {
+    //            R.id.nav_news -> {
+    //                return@setOnNavigationItemSelectedListener true
+    //            }
+    //            R.id.nav_tracker -> {
+    //                val intent = Intent(this, TrainingTrackerActivity::class.java)
+    //                startActivity(intent)
+    //            }
+    //            R.id.nav_history->{
+    //                val intent = Intent(this,HistoryActivity::class.java)
+    //                startActivity(intent)
+    //            }
+    //            R.id.nav_scheduler->{
+    //                val intent = Intent(this,SchedulerActivity::class.java)
+    //                startActivity(intent)
+    //            }
+    //        }
+    //        return@setOnNavigationItemSelectedListener true
+    //    }
+    //}
 
     private fun showLoading(state: Boolean) {
         if (state) {

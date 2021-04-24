@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -8,13 +9,15 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.round
 
-class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
+class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener, IUseBottomNav {
     private lateinit var binding: ActivityTrainingTrackerBinding
     private lateinit var sensorManager: SensorManager
     private val accelerometerReading = FloatArray(3)
@@ -33,8 +36,8 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         binding = ActivityTrainingTrackerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setActiveNavMenu()
-        menuItemListener()
+        setUpActiveMenu(binding.bottomNavView.menu,1)
+        setUpMenuItemListener(binding.bottomNavView,this,1)
         setUpTabLayout()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
     }
@@ -147,5 +150,17 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
             }
             return@setOnNavigationItemSelectedListener true
         }
+    }
+
+    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
+        super.setUpActiveMenu(menu, pageIdx)
+    }
+
+    override fun setUpMenuItemListener(
+        bottomNav: BottomNavigationView,
+        context: Context,
+        currentPageIdx: Int
+    ) {
+        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
     }
 }

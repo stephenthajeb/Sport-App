@@ -1,16 +1,19 @@
 package com.example.sportapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sportapp.databinding.ActivitySchedulerAddBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateListener,
-    TimePickerFragment.DialogTimeListener {
+    TimePickerFragment.DialogTimeListener,IUseBottomNav {
     private lateinit var binding: ActivitySchedulerAddBinding
     private var date: String? = null
     private var startTime: String? = null
@@ -33,6 +36,8 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
         binding = ActivitySchedulerAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpBtnListener()
+        setUpActiveMenu(binding.bottomNavView.menu,3)
+        setUpMenuItemListener(binding.bottomNavView,this,3)
     }
 
     //Todo: onSaveInstanceState later
@@ -91,7 +96,6 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
             else -> endTime = formatter.format(calendar.time)
         }
     }
-
 
     private fun getCustomDaysSelected(): List<Int> {
         val days = mutableListOf<Int>()
@@ -155,6 +159,18 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
             //Todo: save to schedule database, activate job scheduler, alarm manager, redirect to fragment main
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
+        super.setUpActiveMenu(menu, pageIdx)
+    }
+
+    override fun setUpMenuItemListener(
+        bottomNav: BottomNavigationView,
+        context: Context,
+        currentPageIdx: Int
+    ) {
+        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
     }
 
 

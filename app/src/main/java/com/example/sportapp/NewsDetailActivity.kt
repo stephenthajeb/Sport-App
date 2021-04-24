@@ -1,15 +1,18 @@
 package com.example.sportapp
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.example.sportapp.databinding.ActivityNewsDetailBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class NewsDetailActivity : AppCompatActivity() {
+class NewsDetailActivity : AppCompatActivity(),IUseBottomNav {
     private lateinit var binding: ActivityNewsDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,6 +22,8 @@ class NewsDetailActivity : AppCompatActivity() {
         title = "News Detail"
         setContentView(binding.root)
         setUpWebView()
+        setUpActiveMenu(binding.bottomNavView.menu,0)
+        setUpMenuItemListener(binding.bottomNavView,this,0)
     }
 
     private fun setUpWebView(){
@@ -58,4 +63,15 @@ class NewsDetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
+        super.setUpActiveMenu(menu, pageIdx)
+    }
+
+    override fun setUpMenuItemListener(
+        bottomNav: BottomNavigationView,
+        context: Context,
+        currentPageIdx: Int
+    ) {
+        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
+    }
 }
