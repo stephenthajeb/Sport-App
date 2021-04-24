@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.Data
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -31,6 +31,7 @@ data class Schedule(
     var finishTime: String? = null,
     var target: Double? = null,
     var isAuto: Int? = null
+
     //var isAchive: Int = 0
 ) : Parcelable
 

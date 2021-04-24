@@ -1,14 +1,14 @@
 package com.example.sportapp
 
-import android.util.Log
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.Flow
+import com.example.sportapp.Data.Schedule
+import com.example.sportapp.Data.ScheduleDAO
 import kotlinx.coroutines.launch
 
 class ScheduleViewModel(private val scheduleDAO: ScheduleDAO): ViewModel() {
     val schedules : LiveData<List<Schedule>> = scheduleDAO.getAllSchedules().asLiveData()
 
-    fun insert(schedule:Schedule) = viewModelScope.launch {
+    fun insert(schedule: Schedule) = viewModelScope.launch {
         val result = scheduleDAO.insert(schedule)
     }
 }

@@ -1,19 +1,17 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Context
-import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
+import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.round
 
@@ -124,33 +122,6 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener, IUseBo
         supportActionBar?.elevation = 0f
     }
 
-    private fun setActiveNavMenu() {
-        val menuItem: MenuItem = binding.bottomNavView.menu.getItem(1)
-        menuItem.isChecked = true
-    }
-
-    private fun menuItemListener() {
-        binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_news -> {
-                    val intent = Intent(this, NewsActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.nav_tracker -> {
-                    return@setOnNavigationItemSelectedListener true
-                }
-                R.id.nav_history->{
-                    val intent = Intent(this,HistoryActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.nav_scheduler->{
-                    val intent = Intent(this,SchedulerActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-            return@setOnNavigationItemSelectedListener true
-        }
-    }
 
     override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
         super.setUpActiveMenu(menu, pageIdx)

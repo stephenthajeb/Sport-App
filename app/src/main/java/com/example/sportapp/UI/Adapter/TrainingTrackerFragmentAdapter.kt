@@ -1,9 +1,10 @@
-package com.example.sportapp
+package com.example.sportapp.UI.Adapter
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.sportapp.UI.RecyclingTrackerFragment
+import com.example.sportapp.UI.RunningTrackerFragment
 
 class TrainingTrackerFragmentAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
     override fun getItemCount(): Int {

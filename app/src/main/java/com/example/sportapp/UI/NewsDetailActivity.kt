@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,10 +9,11 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.example.sportapp.IUseBottomNav
 import com.example.sportapp.databinding.ActivityNewsDetailBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class NewsDetailActivity : AppCompatActivity(),IUseBottomNav {
+class NewsDetailActivity : AppCompatActivity(), IUseBottomNav {
     private lateinit var binding: ActivityNewsDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

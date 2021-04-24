@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.Data
 
 import android.content.Context
 import androidx.room.Database
@@ -7,9 +7,11 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
 
-@Database(entities = [Schedule::class,History::class], version = 1, exportSchema = false)
+@Database(entities = [Schedule::class, History::class], version = 1, exportSchema = false)
 abstract class SportAppDatabase: RoomDatabase(){
     abstract fun scheduleDAO() : ScheduleDAO
+    abstract fun historyDAO(): HistoryDAO
+
     companion object {
         @Volatile
         private var INSTANCE: SportAppDatabase? = null

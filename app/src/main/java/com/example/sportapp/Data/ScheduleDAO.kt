@@ -1,10 +1,11 @@
-package com.example.sportapp
+package com.example.sportapp.Data
 
 import androidx.annotation.WorkerThread
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.sportapp.Data.Schedule
 import kotlinx.coroutines.flow.Flow
 
 @Dao

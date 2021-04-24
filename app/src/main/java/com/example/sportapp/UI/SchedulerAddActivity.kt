@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Context
 import android.content.Intent
@@ -7,13 +7,18 @@ import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.sportapp.Data.Schedule
+import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.R
+import com.example.sportapp.UI.Reusable.DatePickerFragment
+import com.example.sportapp.UI.Reusable.TimePickerFragment
 import com.example.sportapp.databinding.ActivitySchedulerAddBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateListener,
-    TimePickerFragment.DialogTimeListener,IUseBottomNav {
+    TimePickerFragment.DialogTimeListener, IUseBottomNav {
     private lateinit var binding: ActivitySchedulerAddBinding
     private var date: String? = null
     private var startTime: String? = null

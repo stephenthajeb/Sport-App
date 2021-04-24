@@ -1,17 +1,17 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.sportapp.Data.News
+import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.ActivityNewsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.loopj.android.http.AsyncHttpClient
@@ -19,7 +19,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
 
-class NewsActivity : AppCompatActivity(),IUseBottomNav {
+class NewsActivity : AppCompatActivity(), IUseBottomNav {
     private lateinit var adapter: NewsAdapter
     private lateinit var binding: ActivityNewsBinding
 

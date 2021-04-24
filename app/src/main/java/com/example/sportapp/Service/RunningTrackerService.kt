@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.Service
 
 import android.app.*
 import android.content.Context
@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.sportapp.R
+import com.example.sportapp.UI.TrainingTrackerActivity
 
 class RunningTrackerService : Service(), SensorEventListener {
     private var sensorManager : SensorManager? = null

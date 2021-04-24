@@ -1,18 +1,17 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.databinding.FragmentRunningTrackerBinding
 
 class RunningTrackerFragment : Fragment() {
@@ -27,7 +26,7 @@ class RunningTrackerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (activity !== null) LocalBroadcastManager.getInstance(activity!!).registerReceiver(
+        if (activity !== null) LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(
             trackerReceiver,
             IntentFilter(RunningTrackerService.ACTION_TRACKING)
         )
@@ -74,7 +73,7 @@ class RunningTrackerFragment : Fragment() {
 
 
     private fun setForegroundTracking(activate:Boolean){
-        val intent = Intent(activity,RunningTrackerService::class.java)
+        val intent = Intent(activity, RunningTrackerService::class.java)
         intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING,isTraining)
         if (isTraining){
             intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, activate)
@@ -91,7 +90,7 @@ class RunningTrackerFragment : Fragment() {
     private fun trainingBtnListener() {
         binding?.btnTraining?.setOnClickListener {
             isTraining = !isTraining
-            val intent = Intent(context,RunningTrackerService::class.java)
+            val intent = Intent(context, RunningTrackerService::class.java)
             intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND,false)
             intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING,isTraining)
 //            if (activity !== null) ContextCompat.startForegroundService(activity!!, intent)

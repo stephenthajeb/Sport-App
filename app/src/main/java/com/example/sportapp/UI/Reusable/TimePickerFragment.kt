@@ -1,13 +1,9 @@
-package com.example.sportapp
+package com.example.sportapp.UI.Reusable
 
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import java.util.*

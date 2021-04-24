@@ -1,4 +1,4 @@
-package com.example.sportapp
+package com.example.sportapp.Data
 
 import android.os.Parcelable
 import androidx.room.Entity

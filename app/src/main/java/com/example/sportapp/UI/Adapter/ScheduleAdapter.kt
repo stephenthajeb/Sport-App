@@ -1,21 +1,19 @@
-package com.example.sportapp
+package com.example.sportapp.UI.Adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.view.menu.ActionMenuItemView
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.example.sportapp.Data.Schedule
+import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowScheduleBinding
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
     //private val scheduleList = ArrayList<Schedule>()
     private val scheduleList = MutableLiveData<ArrayList<Schedule>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleAdapter.ScheduleViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_row_schedule, parent, false)
         return ScheduleViewHolder(view)
     }
@@ -35,7 +33,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
     class ScheduleViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val binding = ItemRowScheduleBinding.bind(itemView)
 
-        fun bind(item:Schedule){
+        fun bind(item: Schedule){
             with(itemView){
                 binding.tvId.text = item.id.toString()
                 binding.tvFreq.text = item.frequency

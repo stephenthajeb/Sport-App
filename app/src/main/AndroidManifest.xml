@@ -18,26 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SportApp">
         <service
-            android:name=".RunningTrackerService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <receiver
-            android:name=".TrainingTrackingReceiver"
-            android:enabled="true"
-            android:exported="true" />
-
-        <service
-            android:name=".TrainingTrackerServices"
+            android:name=".Service.RunningTrackerService"
             android:enabled="true"
             android:exported="true" />
         <activity
-            android:name=".SchedulerAddActivity"
+            android:name=".UI.SchedulerAddActivity"
             android:label="Add new Schedule"
             />
-        <activity android:name=".SchedulerActivity" />
-        <activity android:name=".HistoryActivity" />
-        <activity android:name=".NewsActivity">
+        <activity android:name=".UI.SchedulerActivity" />
+        <activity android:name=".UI.HistoryActivity" />
+        <activity android:name=".UI.NewsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,9 +35,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewsDetailActivity"
-            android:parentActivityName=".NewsActivity" />
-        <activity android:name=".TrainingTrackerActivity" />
+            android:name=".UI.NewsDetailActivity"
+            android:parentActivityName=".UI.NewsActivity" />
+        <activity android:name=".UI.TrainingTrackerActivity" />
     </application>
 
 </manifest>

@@ -1,10 +1,12 @@
-package com.example.sportapp
+package com.example.sportapp.UI.Adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.sportapp.Data.News
+import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowNewsBinding
 
 class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
@@ -36,7 +38,7 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = ItemRowNewsBinding.bind(itemView)
 
-        fun bind(newsItem:News){
+        fun bind(newsItem: News){
             with(itemView){
                 binding.tvTitle.text = newsItem.title
                 binding.tvDate.text = newsItem.date

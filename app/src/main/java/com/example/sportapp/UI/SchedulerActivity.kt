@@ -1,27 +1,24 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.MenuItem
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportapp.databinding.ActivityNewsBinding
+import com.example.sportapp.Data.Schedule
+import com.example.sportapp.R
+import com.example.sportapp.ScheduleModelFactory
+import com.example.sportapp.ScheduleViewModel
+import com.example.sportapp.SportApp
+import com.example.sportapp.UI.Adapter.ScheduleAdapter
 import com.example.sportapp.databinding.ActivitySchedulerBinding
 
 class SchedulerActivity : AppCompatActivity(){
     private lateinit var adapter: ScheduleAdapter
     private lateinit var binding: ActivitySchedulerBinding
-    private val scheduleViewModel:ScheduleViewModel by viewModels{
+    private val scheduleViewModel: ScheduleViewModel by viewModels{
         ScheduleModelFactory((application as SportApp).scheduleDAO)
     }
 
@@ -48,18 +45,18 @@ class SchedulerActivity : AppCompatActivity(){
         binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_news -> {
-                    val intent = Intent(this,NewsActivity::class.java)
+                    val intent = Intent(this, NewsActivity::class.java)
                     startActivity(intent)
                 }
                 R.id.nav_tracker -> {
                     val intent = Intent(this, TrainingTrackerActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_history->{
-                    val intent = Intent(this,HistoryActivity::class.java)
+                R.id.nav_history ->{
+                    val intent = Intent(this, HistoryActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_scheduler->{
+                R.id.nav_scheduler ->{
                     return@setOnNavigationItemSelectedListener true
                 }
             }
@@ -69,7 +66,7 @@ class SchedulerActivity : AppCompatActivity(){
 
     private fun setUpBtnListener(){
         binding?.fabAddNewSchedule?.setOnClickListener{
-            val intent = Intent(this,SchedulerAddActivity::class.java)
+            val intent = Intent(this, SchedulerAddActivity::class.java)
             startActivityForResult(intent, REQ_ADD_SCHEDULE)
         }
     }
@@ -97,7 +94,6 @@ class SchedulerActivity : AppCompatActivity(){
             val schedule = data?.getParcelableExtra<Schedule>(SchedulerAddActivity.EXTRA_SCHEDULE)
             try{
                 schedule?.let { scheduleViewModel.insert(schedule = it) }
-                adapter.notifyDataSetChanged()
             }catch (e:Error){
                 Toast.makeText(this,"Error. Save failed !!",Toast.LENGTH_SHORT).show()
             }

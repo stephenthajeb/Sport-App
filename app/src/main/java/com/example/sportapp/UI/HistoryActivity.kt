@@ -1,16 +1,15 @@
-package com.example.sportapp
+package com.example.sportapp.UI
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
+import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.R
 import com.example.sportapp.databinding.ActivityHistoryBinding
-import com.example.sportapp.databinding.ActivitySchedulerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class HistoryActivity : AppCompatActivity(),IUseBottomNav {
+class HistoryActivity : AppCompatActivity(), IUseBottomNav {
     private lateinit var binding: ActivityHistoryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

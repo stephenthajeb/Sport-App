@@ -3,7 +3,10 @@ package com.example.sportapp
 import android.content.Context
 import android.content.Intent
 import android.view.Menu
-import androidx.core.content.ContextCompat.startActivity
+import com.example.sportapp.UI.HistoryActivity
+import com.example.sportapp.UI.NewsActivity
+import com.example.sportapp.UI.SchedulerActivity
+import com.example.sportapp.UI.TrainingTrackerActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 interface IUseBottomNav {
@@ -25,11 +28,11 @@ interface IUseBottomNav {
                 }
                 R.id.nav_history->{
                     if (currentPageIdx==2) return@setOnNavigationItemSelectedListener true
-                    intent = Intent(context,HistoryActivity::class.java)
+                    intent = Intent(context, HistoryActivity::class.java)
                 }
                 R.id.nav_scheduler->{
                     if (currentPageIdx==3) return@setOnNavigationItemSelectedListener true
-                    intent = Intent(context,SchedulerActivity::class.java)
+                    intent = Intent(context, SchedulerActivity::class.java)
                 }
             }
             intent?.let{it -> context.startActivity(it)}
