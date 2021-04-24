@@ -9,9 +9,16 @@ import android.view.MenuItem
 import com.example.sportapp.databinding.ActivityHistoryBinding
 import com.example.sportapp.databinding.ActivitySchedulerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HistoryActivity : AppCompatActivity(),IUseBottomNav {
     private lateinit var binding: ActivityHistoryBinding
+
+    @Inject
+    lateinit var runDAO: HistoryDAO
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)

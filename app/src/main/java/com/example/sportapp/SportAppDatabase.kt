@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import kotlinx.coroutines.CoroutineScope
 
-
+@TypeConverters(ConvertersBitmap::class)
 @Database(entities = [Schedule::class,History::class], version = 1, exportSchema = false)
 abstract class SportAppDatabase: RoomDatabase(){
     abstract fun scheduleDAO() : ScheduleDAO
+    abstract fun historyDAO() : HistoryDAO
     companion object {
         @Volatile
         private var INSTANCE: SportAppDatabase? = null
