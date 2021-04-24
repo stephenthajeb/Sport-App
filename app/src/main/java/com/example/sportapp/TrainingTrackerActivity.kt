@@ -136,6 +136,14 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener {
                 R.id.nav_tracker -> {
                     return@setOnNavigationItemSelectedListener true
                 }
+                R.id.nav_history->{
+                    val intent = Intent(this,HistoryActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_scheduler->{
+                    val intent = Intent(this,SchedulerActivity::class.java)
+                    startActivity(intent)
+                }
             }
             return@setOnNavigationItemSelectedListener true
         }
