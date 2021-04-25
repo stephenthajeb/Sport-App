@@ -4,13 +4,19 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import com.example.sportapp.IUseBottomNav
-import com.example.sportapp.R
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+import com.example.sportapp.*
 import com.example.sportapp.databinding.ActivityHistoryBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HistoryActivity : AppCompatActivity(), IUseBottomNav {
     private lateinit var binding: ActivityHistoryBinding
+    private val historyViewModel: HistoryViewModel by viewModels{
+        HistoryModelFactory((application as SportApp).historyDAO)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)

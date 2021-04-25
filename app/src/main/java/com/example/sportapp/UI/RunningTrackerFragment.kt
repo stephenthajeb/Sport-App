@@ -10,14 +10,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.sportapp.*
+import com.example.sportapp.Data.History
 import com.example.sportapp.Service.RunningTrackerService
+import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.FragmentRunningTrackerBinding
 
 class RunningTrackerFragment : Fragment() {
     private var isTraining: Boolean = false
     private var steps: Float = 0f
     private var binding: FragmentRunningTrackerBinding? = null
+    private val historyViewModel: HistoryViewModel by viewModels{
+        HistoryModelFactory((activity?.application as SportApp).historyDAO)
+    }
 
 
     companion object{
@@ -59,12 +67,6 @@ class RunningTrackerFragment : Fragment() {
         outState.putFloat(EXTRA_STEPS, steps)
     }
 
-//    private fun startForegroundServiceForTracking(foreground: Boolean) {
-//        val intent = Intent(activity, RunningTrackerService::class.java)
-//        intent.putExtra(RunningTrackerService.IS_FOREGROUND, foreground)
-//        if (activity !== null) ContextCompat.startForegroundService(activity!!, intent)
-//    }
-
     override fun onPause() {
         super.onPause()
         //when leave app show tracking as notification
@@ -82,7 +84,7 @@ class RunningTrackerFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        if (activity !== null) LocalBroadcastManager.getInstance(activity!!).unregisterReceiver(trackerReceiver)
+        if (activity !== null) LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(trackerReceiver)
         super.onDestroy()
     }
 
@@ -93,7 +95,6 @@ class RunningTrackerFragment : Fragment() {
             val intent = Intent(context, RunningTrackerService::class.java)
             intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND,false)
             intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING,isTraining)
-//            if (activity !== null) ContextCompat.startForegroundService(activity!!, intent)
             context?.startService(intent)
             if (isTraining) {
                 Toast.makeText(context,"Start training: walking/running",Toast.LENGTH_SHORT).show()
@@ -102,7 +103,13 @@ class RunningTrackerFragment : Fragment() {
                 Toast.makeText(context,"Saving training record",Toast.LENGTH_SHORT).show()
                 binding?.btnTraining?.text = "Start now"
                 binding?.tvProgress?.text = ""
-                //Todo : Save to DB, direct to history detail
+                try{
+                    //Todo: add other field
+                    val history = History(mode=SchedulerAddActivity.RUNNING,result=steps)
+                    historyViewModel.insert(history)
+                }catch(e:Error){
+                    Toast.makeText(context,"Error in saving this record", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

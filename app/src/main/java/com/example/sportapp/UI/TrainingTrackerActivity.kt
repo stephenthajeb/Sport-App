@@ -8,7 +8,11 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.fragment.app.viewModels
+import com.example.sportapp.HistoryModelFactory
+import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,6 +26,7 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener, IUseBo
     private val magnetometerReading = FloatArray(3)
     private val rotationMatrix = FloatArray(9)
     private val orientationAngles = FloatArray(3)
+
 
     companion object {
         private var TAB_TITLES = arrayOf(
@@ -109,9 +114,7 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener, IUseBo
         binding.ivCompass.rotation = angle.toFloat() * -1
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-
-    }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     private fun setUpTabLayout() {
         val tabLayoutAdapter = TrainingTrackerFragmentAdapter(this)
