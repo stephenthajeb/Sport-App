@@ -18,5 +18,11 @@ interface ScheduleDAO{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(schedule: Schedule):Long
 
+    @Delete
+    suspend fun deleteSchedule(schedule: Schedule)
+
+    @Update
+    suspend fun updateSchedule(schedule: Schedule)
     //Todo: delete, getUserById, updateScheduleTargetAchieved() (?)
+
 }
