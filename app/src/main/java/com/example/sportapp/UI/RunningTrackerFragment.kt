@@ -108,18 +108,14 @@ class RunningTrackerFragment : Fragment() {
                 startDate = Calendar.getInstance()
                 binding?.btnTraining?.text = "Finish now"
             } else {
-                //Todo: delete later
-                //binding?.btnTraining?.text = "Start Again"
-                //binding?.tvProgress?.text = ""
+                steps = 0f
+                binding?.btnTraining?.text = "Start Now"
+                binding?.tvProgress?.text = ""
                 Toast.makeText(context, "Saving training record", Toast.LENGTH_SHORT).show()
                 try {
                     val date = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault()).format(startDate?.time)
                     val startTime = SimpleDateFormat("HH:mm",Locale.getDefault()).format(startDate?.time)
                     val endTime = SimpleDateFormat("HH:mm",Locale.getDefault()).format(Calendar.getInstance().time)
-                    Log.d("test",date.toString())
-                    Log.d("test",startTime.toString())
-                    Log.d("test",endTime.toString())
-                    //Todo: add other field, navigate to historyDetailTraining
                     val history = History(
                         mode = SchedulerAddActivity.RUNNING,
                         result = steps,
