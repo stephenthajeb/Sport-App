@@ -3,6 +3,8 @@ package com.example.sportapp.Data
 import androidx.annotation.WorkerThread
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.Delete
+import androidx.room.Update
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.sportapp.Data.Schedule
