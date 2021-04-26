@@ -24,6 +24,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
 
     fun setData(data:ArrayList<Schedule>){
         scheduleList.value = data
+        notifyDataSetChanged()
     }
 
     fun getData(): ArrayList<Schedule>? = scheduleList.value

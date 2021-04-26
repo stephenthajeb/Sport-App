@@ -4,16 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.HistoryActivity"
-    app:flexDirection="column">
-    <CalendarView
-        android:id="@+id/cv_calendar"
-        app:layout_constraintTop_toTopOf="parent"
+    tools:context=".UI.HistoryDetailActivity">
+    <fragment
+        android:id="@+id/frag_history_detail"
+        app:defaultNavHost="true"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minDate="05/01/2021"
-        android:maxDate="12/31/2021"
-        />
+        android:layout_height="match_parent"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
         android:layout_width="0dp"
