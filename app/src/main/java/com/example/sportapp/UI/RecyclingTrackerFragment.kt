@@ -12,8 +12,12 @@ import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Reusable.TrackingUtility
+import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+
 import java.util.jar.Manifest
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,9 +34,12 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var _binding: FragmentRecyclingTrackerBinding? = null
+    private val binding get() = _binding!!
     private val historyViewModel: HistoryViewModel by viewModels{
         HistoryModelFactory((activity?.application as SportApp).historyDAO)
     }
+    private var map: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +54,19 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recycling_tracker, container, false)
+        _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requestPermissions()
+        binding.mapView.onCreate(savedInstanceState)
+
+        binding.mapView.getMapAsync {
+            map = it
+        }
+
     }
 
     private fun requestPermissions() {
@@ -98,6 +112,45 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.mapView?.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView?.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView?.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView?.onLowMemory()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView?.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView?.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
