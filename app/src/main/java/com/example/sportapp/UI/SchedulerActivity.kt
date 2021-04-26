@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
@@ -79,6 +80,7 @@ class SchedulerActivity : AppCompatActivity(){
 
         scheduleViewModel.schedules.observe(this){
             adapter.setData(it as ArrayList<Schedule>)
+            adapter.notifyDataSetChanged()
         }
 
         if (scheduleViewModel.schedules.value?.size == 0){
