@@ -13,6 +13,9 @@ interface HistoryDAO{
     @Query("SELECT * FROM history_table ORDER BY mode DESC,datetime(date) DESC,time(startTime) DESC")
     fun getAllHistories(): Flow<List<History>>
 
+    @Query("SELECT * FROM history_table WHERE date=:date ORDER BY mode DESC,datetime(date) DESC,time(startTime) DESC")
+    fun getSpesificDateHistory(date: String): Flow<List<History>>
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     @Insert(onConflict = OnConflictStrategy.IGNORE)
