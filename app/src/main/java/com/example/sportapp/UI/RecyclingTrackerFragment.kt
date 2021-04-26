@@ -1,11 +1,24 @@
 package com.example.sportapp.UI
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.example.sportapp.HistoryModelFactory
+import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
+import com.example.sportapp.SportApp
+import com.example.sportapp.UI.Reusable.TrackingUtility
+import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
+
+import java.util.jar.Manifest
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,10 +30,16 @@ private const val ARG_PARAM2 = "param2"
  * Use the [RecyclingTrackerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RecyclingTrackerFragment : Fragment() {
+class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var _binding: FragmentRecyclingTrackerBinding? = null
+    private val binding get() = _binding!!
+    private val historyViewModel: HistoryViewModel by viewModels{
+        HistoryModelFactory((activity?.application as SportApp).historyDAO)
+    }
+    private var map: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +54,103 @@ class RecyclingTrackerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recycling_tracker, container, false)
+        _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requestPermissions()
+        binding.mapView.onCreate(savedInstanceState)
+
+        binding.mapView.getMapAsync {
+            map = it
+        }
+
+    }
+
+    private fun requestPermissions() {
+        if(TrackingUtility.hasLocationPermissions(requireContext())) {
+            return
+        }
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            EasyPermissions.requestPermissions(
+                this,
+                "You need to accept location permissions to use this app.",
+                0,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "You need to accept location permissions to use this app.",
+                0,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+        }
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if(EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        } else {
+            requestPermissions()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView?.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView?.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView?.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView?.onLowMemory()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView?.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView?.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

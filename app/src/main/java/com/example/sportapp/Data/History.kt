@@ -1,5 +1,6 @@
 package com.example.sportapp.Data
 
+import android.graphics.Bitmap
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -18,6 +19,7 @@ import java.sql.Time
 @Entity(tableName = "history_table")
 @Parcelize
 data class History(
+    var img: Bitmap? = null, // for screenshot tracker
     var mode: String? = null,
     var date: String? = null,
     var startTime: String? = null,
