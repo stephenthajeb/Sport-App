@@ -101,12 +101,15 @@ class RunningTrackerFragment : Fragment() {
                 binding?.btnTraining?.text = "Finish now"
             } else {
                 Toast.makeText(context,"Saving training record",Toast.LENGTH_SHORT).show()
-                binding?.btnTraining?.text = "Start now"
+                binding?.btnTraining?.text = "Start Again"
                 binding?.tvProgress?.text = ""
                 try{
-                    //Todo: add other field
+                    //Todo: add other field, navigate to historyDetailTraining
                     val history = History(mode=SchedulerAddActivity.RUNNING,result=steps)
                     historyViewModel.insert(history)
+                    val intent = Intent(context,HistoryDetailTrainingActivity::class.java)
+                    intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY,history)
+                    startActivity(intent)
                 }catch(e:Error){
                     Toast.makeText(context,"Error in saving this record", Toast.LENGTH_SHORT).show()
                 }

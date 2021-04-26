@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/historyDetailFragment2">
+    <fragment
+        android:id="@+id/historyDetailFragment2"
+        android:name="com.example.sportapp.UI.HistoryDetailFragment"
+        android:label="fragment_history_detail"
+        tools:layout="@layout/fragment_history_detail" >
+        <action
+            android:id="@+id/action_historyDetailFragment2_to_historyDetailTrainingFragment2"
+            app:destination="@id/historyDetailTrainingFragment2" />
+        <action
+            android:id="@+id/action_historyDetailFragment2_to_historyDetailTrainingActivity"
+            app:destination="@id/historyDetailTrainingActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyDetailTrainingFragment2"
+        android:name="com.example.sportapp.UI.HistoryDetailTrainingFragment"
+        android:label="fragment_history_detail_training"
+        tools:layout="@layout/fragment_history_detail_training" />
+    <activity
+        android:id="@+id/historyDetailTrainingActivity"
+        android:name="com.example.sportapp.UI.HistoryDetailTrainingActivity"
+        android:label="activity_history_detail_training"
+        tools:layout="@layout/activity_history_detail_training" />
+</navigation>

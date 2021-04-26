@@ -20,14 +20,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SportApp">
+        <activity
+            android:name=".UI.HistoryDetailTrainingActivity"
+        />
+
+        <activity android:name=".UI.HistoryDetailActivity">
+            <nav-graph android:value="@navigation/navigation" />
+        </activity>
+
         <service
             android:name=".Service.RunningTrackerService"
             android:enabled="true"
             android:exported="true" />
+
         <activity
             android:name=".UI.SchedulerAddActivity"
-            android:label="Add new Schedule"
-            />
+            android:label="Add new Schedule" />
         <activity android:name=".UI.SchedulerActivity" />
         <activity android:name=".UI.HistoryActivity" />
         <activity android:name=".UI.NewsActivity">

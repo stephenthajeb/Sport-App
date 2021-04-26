@@ -133,34 +133,6 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
         super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
     }
 
-    //private fun setActiveNavMenu() {
-    //    val menuItem: MenuItem = binding.bottomNavView.menu.getItem(0)
-    //    menuItem.isChecked = true
-    //}
-    //
-    //private fun menuItemListener() {
-    //    binding.bottomNavView.setOnNavigationItemSelectedListener { item ->
-    //        when (item.itemId) {
-    //            R.id.nav_news -> {
-    //                return@setOnNavigationItemSelectedListener true
-    //            }
-    //            R.id.nav_tracker -> {
-    //                val intent = Intent(this, TrainingTrackerActivity::class.java)
-    //                startActivity(intent)
-    //            }
-    //            R.id.nav_history->{
-    //                val intent = Intent(this,HistoryActivity::class.java)
-    //                startActivity(intent)
-    //            }
-    //            R.id.nav_scheduler->{
-    //                val intent = Intent(this,SchedulerActivity::class.java)
-    //                startActivity(intent)
-    //            }
-    //        }
-    //        return@setOnNavigationItemSelectedListener true
-    //    }
-    //}
-
     private fun showLoading(state: Boolean) {
         if (state) {
             binding.progressBar.visibility = View.VISIBLE

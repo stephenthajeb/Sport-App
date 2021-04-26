@@ -13,6 +13,9 @@ interface HistoryDAO{
     @Query("SELECT * FROM history_table ORDER BY mode DESC,datetime(date) DESC,time(startTime) DESC")
     fun getAllHistories(): Flow<List<History>>
 
+    @Query ("SELECT * FROM history_table WHERE strftime('%Y',date) IN(:year) AND strftime('%m',date) IN(:month) AND strftime('%d',date) IN(:date)")
+    fun getAllHistoriesOnDate(date:String,month:String,year:String): Flow<List<History>>
+    
     @Query("SELECT * FROM history_table WHERE date=:date ORDER BY mode DESC,datetime(date) DESC,time(startTime) DESC")
     fun getSpesificDateHistory(date: String): Flow<List<History>>
 

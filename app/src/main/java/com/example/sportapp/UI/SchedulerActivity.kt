@@ -79,7 +79,6 @@ class SchedulerActivity : AppCompatActivity(){
 
         scheduleViewModel.schedules.observe(this){
             adapter.setData(it as ArrayList<Schedule>)
-            adapter.notifyDataSetChanged()
         }
 
         if (scheduleViewModel.schedules.value?.size == 0){
