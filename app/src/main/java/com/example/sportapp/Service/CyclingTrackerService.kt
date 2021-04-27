@@ -1,5 +1,6 @@
 package com.example.sportapp.Service
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
@@ -8,28 +9,62 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.os.Build
 import android.os.IBinder
+import android.os.Looper
+import android.view.Gravity.apply
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.view.GravityCompat.apply
+import androidx.lifecycle.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
+import com.example.sportapp.Constant.Constant.FASTEST_LOCATION_INTERVAL
+import com.example.sportapp.Constant.Constant.LOCATION_UPDATE_INTERVAL
 import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_ID
 import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_NAME
 import com.example.sportapp.Constant.Constant.NOTIFICATION_ID
 import com.example.sportapp.R
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.NewsActivity
+import com.example.sportapp.UI.Reusable.TrackingUtility
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
-class CyclingTrackerService : Service() {
+typealias Polyline = MutableList<LatLng>
+typealias Polylines = MutableList<Polyline>
+class CyclingTrackerService : LifecycleService(){
 
     var isFirstRun = true
 
-    override fun onBind(intent: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    companion object {
+        val isTracking = MutableLiveData<Boolean>()
+        val pathPoints = MutableLiveData<Polylines>()
+    }
+
+    private fun postInitialValues() {
+        isTracking.postValue(false)
+        pathPoints.postValue(mutableListOf())
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        postInitialValues()
+        fusedLocationProviderClient = FusedLocationProviderClient(this)
+
+        isTracking.observe(this, Observer {
+            updateLocationTracking(it)
+        })
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -54,7 +89,59 @@ class CyclingTrackerService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @SuppressLint("MissingPermission")
+    private fun updateLocationTracking(isTracking: Boolean) {
+        if(isTracking) {
+            if(TrackingUtility.hasLocationPermissions(this)) {
+                val request = LocationRequest.create().apply {
+                    interval = LOCATION_UPDATE_INTERVAL
+                    fastestInterval = FASTEST_LOCATION_INTERVAL
+                    priority = PRIORITY_HIGH_ACCURACY
+                }
+                fusedLocationProviderClient.requestLocationUpdates(
+                        request,
+                        locationCallback,
+                        Looper.getMainLooper()
+                )
+            }
+        } else {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        }
+    }
+
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult?) {
+            super.onLocationResult(result)
+            if(isTracking.value!!) {
+                result?.locations?.let { locations ->
+                    for(location in locations) {
+                        addPathPoint(location)
+                        Timber.d("NEW LOCATION: ${location.latitude}, ${location.longitude}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addPathPoint(location: Location?) {
+        location?.let {
+            val pos = LatLng(location.latitude, location.longitude)
+            pathPoints.value?.apply {
+                last().add(pos)
+                pathPoints.postValue(this)
+            }
+        }
+    }
+
+    private fun addEmptyPolyline() = pathPoints.value?.apply {
+        add(mutableListOf())
+        pathPoints.postValue(this)
+    } ?: pathPoints.postValue(mutableListOf(mutableListOf()))
+
     private fun startForegroundService() {
+        addEmptyPolyline()
+        isTracking.postValue(true)
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
 
@@ -91,4 +178,6 @@ class CyclingTrackerService : Service() {
         )
         notificationManager.createNotificationChannel(channel)
     }
+
+
 }
