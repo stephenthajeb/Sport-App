@@ -21,6 +21,7 @@ import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_NAME
 import com.example.sportapp.Constant.Constant.NOTIFICATION_ID
 import com.example.sportapp.R
 import com.example.sportapp.SportApp
+import com.example.sportapp.UI.NewsActivity
 import timber.log.Timber
 
 class CyclingTrackerService : Service() {
@@ -75,7 +76,7 @@ class CyclingTrackerService : Service() {
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, SportApp::class.java).also {
+            Intent(this, NewsActivity::class.java).also {
                 it.action = ACTION_SHOW_TRACKING_FRAGMENT
             },
             FLAG_UPDATE_CURRENT

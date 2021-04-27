@@ -8,9 +8,14 @@ import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.sportapp.Constant.Constant.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.sportapp.Data.News
 import com.example.sportapp.IUseBottomNav
+import com.example.sportapp.R
 import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.ActivityNewsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -32,6 +37,7 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
         super.onCreate(savedInstanceState)
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        navigateToTrackingFragmentIfNeeded(intent)
         setUpActiveMenu(binding.bottomNavView.menu,0)
         setUpMenuItemListener(binding.bottomNavView,this,0)
         setUpAdapter()
@@ -119,6 +125,17 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
                 Toast.makeText(this@NewsActivity, errorMessage, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navigateToTrackingFragmentIfNeeded(intent)
+    }
+
+    private fun navigateToTrackingFragmentIfNeeded(intent: Intent?) {
+        if(intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
+            NavHostFragment().findNavController().navigate(R.id.action_global_trackingFragment)
+        }
     }
 
     override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
