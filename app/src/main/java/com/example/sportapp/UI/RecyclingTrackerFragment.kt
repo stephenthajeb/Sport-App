@@ -8,16 +8,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
+import com.example.sportapp.Constant.Constant.MAP_ZOOM
+import com.example.sportapp.Constant.Constant.POLYLINE_COLOR
+import com.example.sportapp.Constant.Constant.POLYLINE_WIDTH
 import com.example.sportapp.HistoryModelFactory
 import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
 import com.example.sportapp.Service.CyclingTrackerService
+import com.example.sportapp.Service.Polyline
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.PolylineOptions
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -43,6 +51,8 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         HistoryModelFactory((activity?.application as SportApp).historyDAO)
     }
     private var map: GoogleMap? = null
+    private var isTracking = false
+    private var pathPoints = mutableListOf<Polyline>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,12 +76,13 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         requestPermissions()
         binding.mapView.onCreate(savedInstanceState)
         binding.btnToggleRun.setOnClickListener {
-            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+            toggleRun()
         }
         binding.mapView.getMapAsync {
             map = it
+            addAllPolylines()
         }
-
+        subscribeToObservers()
     }
 
     private fun sendCommandToService(action: String) =
@@ -101,6 +112,71 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
                 android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
+        }
+    }
+
+    private fun subscribeToObservers() {
+        CyclingTrackerService.isTracking.observe(viewLifecycleOwner, Observer {
+            updateTracking(it)
+        })
+
+        CyclingTrackerService.pathPoints.observe(viewLifecycleOwner, Observer {
+            pathPoints = it
+            addLatestPolyline()
+            moveCameraToUser()
+        })
+    }
+
+    private fun toggleRun() {
+        if(isTracking) {
+            sendCommandToService(ACTION_PAUSE_SERVICE)
+        } else {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
+    }
+
+    private fun updateTracking(isTracking: Boolean) {
+        this.isTracking = isTracking
+        if(!isTracking) {
+            binding.btnToggleRun.text = "Start"
+            binding.btnFinishRun.visibility = View.VISIBLE
+        } else {
+            binding.btnToggleRun.text = "Stop"
+            binding.btnFinishRun.visibility = View.GONE
+        }
+    }
+
+    private fun moveCameraToUser() {
+        if(pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()) {
+            map?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    pathPoints.last().last(),
+                    MAP_ZOOM
+                )
+            )
+        }
+    }
+
+    private fun addAllPolylines() {
+        for(polyline in pathPoints) {
+            val polylineOptions = PolylineOptions()
+                .color(POLYLINE_COLOR)
+                .width(POLYLINE_WIDTH)
+                .addAll(polyline)
+            map?.addPolyline(polylineOptions)
+        }
+    }
+
+    private fun addLatestPolyline() {
+        if(pathPoints.isNotEmpty() && pathPoints.last().size > 1) {
+            val preLastLatLng = pathPoints.last()[pathPoints.last().size - 2]
+            val lastLatLng = pathPoints.last().last()
+            val polylineOptions = PolylineOptions()
+                .color(POLYLINE_COLOR)
+                .width(POLYLINE_WIDTH)
+                .add(preLastLatLng)
+                .add(lastLatLng)
+            map?.addPolyline(polylineOptions)
         }
     }
 
