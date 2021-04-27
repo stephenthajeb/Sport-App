@@ -50,8 +50,22 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         private val binding = ItemRowHistoryBinding.bind(itemView)
 
         fun bind(item: History) {
+            val generalDate = item.date.toString()
+            val startDate = item.startTime.toString()
+            val finalDate = item.endTime.toString()
+
+            val dist = item.result.toString()
+            val ids = item.id.toString()
+            val mode = item.mode.toString()
+
+            val buildDesc = "$ids - $mode"
+            val buildDescDate = "$generalDate: $startDate - $finalDate"
+            val buildDistance = "Jarak Tempuh: $dist M"
+
             with(itemView) {
-                binding.tvId.text = item.id.toString()
+                binding.tvId.text = buildDesc
+                binding.tvDescDate.text = buildDescDate
+                binding.tvDistance.text = buildDistance
             }
         }
     }
