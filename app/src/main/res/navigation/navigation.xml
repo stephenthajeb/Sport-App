@@ -8,7 +8,7 @@
         android:id="@+id/historyDetailFragment2"
         android:name="com.example.sportapp.UI.HistoryDetailFragment"
         android:label="fragment_history_detail"
-        tools:layout="@layout/fragment_history_detail" >
+        tools:layout="@layout/fragment_history_detail">
         <action
             android:id="@+id/action_historyDetailFragment2_to_historyDetailTrainingFragment2"
             app:destination="@id/historyDetailTrainingFragment2" />

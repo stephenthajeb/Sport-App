@@ -21,6 +21,7 @@ import com.example.sportapp.Data.Schedule
 import com.example.sportapp.UI.Adapter.HistoryAdapter
 import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.FragmentHistoryDetailBinding
+import java.text.SimpleDateFormat
 
 
 class HistoryDetailFragment : Fragment() {
@@ -66,14 +67,9 @@ class HistoryDetailFragment : Fragment() {
         val activity = requireActivity()
         binding?.rvHistory?.layoutManager = LinearLayoutManager(context)
         binding?.rvHistory?.adapter = adapter
-        val date = activity.intent.getIntExtra(HistoryActivity.EXTRA_DATE,-1)
-        val month = activity.intent.getIntExtra(HistoryActivity.EXTRA_MONTH,-1)
-        val year = activity.intent.getIntExtra(HistoryActivity.EXTRA_YEAR,-1)
-
-        if (date != -1 && month != -1 && year!=-1){
-            historyViewModel.getHistoryOnDate(date.toString(),month.toString(),year.toString()).observe(activity){
-                adapter?.setData(it as ArrayList<History>)
-            }
+        val formattedDate = SimpleDateFormat("yyyy-MM-dd").format(activity.intent.getSerializableExtra(HistoryActivity.EXTRA_CALENDAR) )
+        historyViewModel.getHistoriesOnDate(formattedDate).observe(activity){
+            adapter?.setData(it as ArrayList<History>)
         }
 
     }

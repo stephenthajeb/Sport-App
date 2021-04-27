@@ -22,6 +22,7 @@ class HistoryActivity : AppCompatActivity(), IUseBottomNav{
         const val EXTRA_DATE = "date"
         const val EXTRA_MONTH = "month"
         const val EXTRA_YEAR = "year"
+        const val EXTRA_CALENDAR = "calendar"
     }
 
 
@@ -50,11 +51,12 @@ class HistoryActivity : AppCompatActivity(), IUseBottomNav{
     private fun setUpDatePickerListener(){
         binding.cvCalendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val intent = Intent(this, HistoryDetailActivity::class.java)
-            intent.putExtra(EXTRA_DATE,dayOfMonth)
-            intent.putExtra(EXTRA_MONTH,month)
-            intent.putExtra(EXTRA_YEAR,year)
+            val preciseMonth = month+1//Month is 0 based idx so Desember is 11
+            val cal = Calendar.getInstance()
+            cal.set(year,month,dayOfMonth,0,0)
+            intent.putExtra(EXTRA_CALENDAR,cal.time)
             startActivity(intent)
-            Toast.makeText(this,"$dayOfMonth-$month-$year selected",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"History on $dayOfMonth-$preciseMonth-$year",Toast.LENGTH_SHORT).show()
         }
     }
 

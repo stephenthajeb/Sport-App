@@ -20,7 +20,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_row_schedule, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_row_history, parent, false)
         return HistoryViewHolder(view)
     }
 
