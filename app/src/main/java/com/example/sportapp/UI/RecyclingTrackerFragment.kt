@@ -1,5 +1,6 @@
 package com.example.sportapp.UI
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.HistoryModelFactory
 import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
+import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
@@ -62,12 +65,20 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         super.onViewCreated(view, savedInstanceState)
         requestPermissions()
         binding.mapView.onCreate(savedInstanceState)
-
+        binding.btnToggleRun.setOnClickListener {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
         binding.mapView.getMapAsync {
             map = it
         }
 
     }
+
+    private fun sendCommandToService(action: String) =
+            Intent(requireContext(), CyclingTrackerService::class.java).also {
+                it.action = action
+                requireContext().startService(it)
+            }
 
     private fun requestPermissions() {
         if(TrackingUtility.hasLocationPermissions(requireContext())) {

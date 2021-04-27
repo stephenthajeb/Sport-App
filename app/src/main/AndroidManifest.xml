@@ -33,6 +33,9 @@
             android:enabled="true"
             android:exported="true" />
 
+        <service android:name=".Service.CyclingTrackerService"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name=".UI.SchedulerAddActivity"
             android:label="Add new Schedule" />
