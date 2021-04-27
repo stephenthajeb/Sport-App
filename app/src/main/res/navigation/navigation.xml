@@ -26,11 +26,17 @@
         android:name="com.example.sportapp.UI.HistoryDetailTrainingActivity"
         android:label="activity_history_detail_training"
         tools:layout="@layout/activity_history_detail_training" />
+    <activity
+        android:id="@+id/NewsActivity"
+        android:name="com.example.sportapp.UI.NewsActivity"
+        android:label="activity_news"
+        tools:layout="@layout/activity_news" />
     <fragment
         android:id="@+id/CyclingFragment"
         android:name="com.example.sportapp.UI.RecyclingTrackerFragment"
-        android:label="TrackingFragment" >
+        android:label="CyclingFragment" >
     </fragment>
+
     <action android:id="@+id/action_global_trackingFragment"
         app:destination="@id/CyclingFragment"
         app:launchSingleTop="true" />
