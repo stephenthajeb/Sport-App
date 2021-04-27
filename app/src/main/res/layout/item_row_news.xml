@@ -13,6 +13,8 @@
             android:id="@+id/iv_img"
             android:layout_width="90dp"
             android:layout_height="90dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
             android:padding="5dp"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +23,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="3dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="title"
@@ -34,43 +36,47 @@
 
         <TextView
             android:id="@+id/tv_source"
+            android:layout_marginLeft="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="source"
+            app:layout_constraintTop_toBottomOf="@id/tv_date"
             app:layout_constraintStart_toEndOf="@id/iv_img"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
-            android:padding="5dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/tv_author"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="author"
-            app:layout_constraintTop_toBottomOf="@id/tv_source"
-            app:layout_constraintStart_toEndOf="@id/iv_img"
-            android:padding="5dp"
+            android:padding="1dp"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/tv_date"
+            android:layout_marginLeft="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="date"
-            app:layout_constraintTop_toBottomOf="@id/tv_author"
             app:layout_constraintStart_toEndOf="@id/iv_img"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="5dp"/>
+            android:padding="1dp"/>
 
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="description"
-            app:layout_constraintStart_toEndOf="@id/iv_img"
-            app:layout_constraintTop_toBottomOf="@id/tv_date"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:padding="5dp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_author"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="author"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_source"-->
+<!--            app:layout_constraintStart_toEndOf="@id/iv_img"-->
+<!--            android:padding="5dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
+
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_description"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="description"-->
+<!--            app:layout_constraintStart_toEndOf="@id/iv_img"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_date"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:padding="5dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

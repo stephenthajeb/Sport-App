@@ -8,6 +8,9 @@ import com.bumptech.glide.Glide
 import com.example.sportapp.Data.News
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowNewsBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     private val newsList = ArrayList<News>()
@@ -39,12 +42,27 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         private val binding = ItemRowNewsBinding.bind(itemView)
 
         fun bind(newsItem: News){
+            val source = newsItem.source
+            val author = newsItem.author
+            var buildSourceWriter: String = ""
+
+            if (author.isNullOrBlank()) {
+                buildSourceWriter = "$source, $source"
+            } else {
+                buildSourceWriter =  "$source, $author"
+            }
+
+
+            val formatter = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(newsItem.date)
+
+
             with(itemView){
                 binding.tvTitle.text = newsItem.title
-                binding.tvDate.text = newsItem.date
-                binding.tvSource.text = newsItem.source
-                binding.tvDescription.text = newsItem.description
-                binding.tvAuthor.text = newsItem.author
+                binding.tvDate.text = formatter.format(date)
+                binding.tvSource.text = buildSourceWriter
+                // binding.tvDescription.text = newsItem.description
+                // binding.tvAuthor.text = newsItem.author
                 Glide.with(this)
                     .load(newsItem.img)
                     .into(binding.ivImg)
