@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.example.sportapp.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
@@ -22,7 +20,6 @@ import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,16 +28,11 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.lifecycle.Observer
+import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 
-import java.util.jar.Manifest
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RecyclingTrackerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks, IUseBottomNav {
+class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), EasyPermissions.PermissionCallbacks, IUseBottomNav {
     private var _binding: FragmentRecyclingTrackerBinding? = null
     private val binding get() = _binding!!
     private val historyViewModel: HistoryViewModel by viewModels{
@@ -56,8 +48,8 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
         _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
@@ -123,10 +115,8 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
                     "Run saved successfully",
                     Snackbar.LENGTH_LONG
             ).show()
+            sendCommandToService(ACTION_STOP_SERVICE)
             stopRun()
-            val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
-            intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
-            startActivity(intent)
         }
     }
 
@@ -225,6 +215,9 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
     private fun stopRun() {
         sendCommandToService(ACTION_STOP_SERVICE)
+        var bindings: ActivityTrainingTrackerBinding = ActivityTrainingTrackerBinding.inflate(layoutInflater)
+        bindings.bottomNavView.menu.getItem(1).isChecked = false
+        setUpActiveMenu(bindings.bottomNavView.menu,0)
         var intent = Intent(context, NewsActivity::class.java)
         intent?.let{it -> context?.startActivity(it)}
     }
@@ -334,3 +327,5 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         _binding = null
     }
 }
+
+

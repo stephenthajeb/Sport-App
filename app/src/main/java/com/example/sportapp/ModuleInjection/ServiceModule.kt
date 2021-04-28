@@ -9,6 +9,7 @@ import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_ID
 import com.example.sportapp.R
 import com.example.sportapp.UI.NewsActivity
 import com.example.sportapp.UI.RecyclingTrackerFragment
+import com.example.sportapp.UI.TrainingTrackerActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.Module
 import dagger.Provides
@@ -33,7 +34,7 @@ object ServiceModule {
     ) = PendingIntent.getActivity(
             app,
             0,
-            Intent(app, NewsActivity::class.java).also {
+            Intent(app, TrainingTrackerActivity::class.java).also {
                 it.action = ACTION_SHOW_TRACKING_FRAGMENT
             },
             PendingIntent.FLAG_UPDATE_CURRENT

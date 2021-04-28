@@ -34,6 +34,7 @@
     <fragment
         android:id="@+id/CyclingFragment"
         android:name="com.example.sportapp.UI.RecyclingTrackerFragment"
+        tools:layout="@layout/fragment_recycling_tracker"
         android:label="CyclingFragment" >
     </fragment>
 

@@ -37,7 +37,6 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
         super.onCreate(savedInstanceState)
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        navigateToTrackingFragmentIfNeeded(intent)
         setUpActiveMenu(binding.bottomNavView.menu,0)
         setUpMenuItemListener(binding.bottomNavView,this,0)
         setUpAdapter()
@@ -127,17 +126,6 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
         })
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        navigateToTrackingFragmentIfNeeded(intent)
-    }
-
-    private fun navigateToTrackingFragmentIfNeeded(intent: Intent?) {
-        if(intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
-            var intents = Intent(this, TrainingTrackerActivity::class.java)
-            intents?.let{it -> this.startActivity(it)}
-        }
-    }
 
     override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
         super.setUpActiveMenu(menu, pageIdx)

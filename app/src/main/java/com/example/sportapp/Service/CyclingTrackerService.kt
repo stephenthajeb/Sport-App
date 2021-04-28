@@ -6,20 +6,17 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
-import android.os.IBinder
 import android.os.Looper
-import android.view.Gravity.apply
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.view.GravityCompat.apply
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
-import com.example.sportapp.Constant.Constant.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
 import com.example.sportapp.Constant.Constant.FASTEST_LOCATION_INTERVAL
@@ -29,8 +26,6 @@ import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_NAME
 import com.example.sportapp.Constant.Constant.NOTIFICATION_ID
 import com.example.sportapp.Constant.Constant.TIMER_UPDATE_INTERVAL
 import com.example.sportapp.R
-import com.example.sportapp.SportApp
-import com.example.sportapp.UI.NewsActivity
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -46,13 +41,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+
 typealias Polyline = MutableList<LatLng>
 typealias Polylines = MutableList<Polyline>
+
 @AndroidEntryPoint
-class CyclingTrackerService : LifecycleService(){
+class CyclingTrackerService : LifecycleService() {
 
     var isFirstRun = true
-
     var serviceKilled = false
 
     @Inject
@@ -64,12 +60,6 @@ class CyclingTrackerService : LifecycleService(){
     lateinit var baseNotificationBuilder: NotificationCompat.Builder
 
     lateinit var curNotificationBuilder: NotificationCompat.Builder
-
-    private var isTimerEnabled = false
-    private var lapTime = 0L
-    private var timeRun = 0L
-    private var timeStarted = 0L
-    private var lastSecondTimestamp = 0L
 
     companion object {
         val timeRunInMillis = MutableLiveData<Long>()
@@ -107,9 +97,9 @@ class CyclingTrackerService : LifecycleService(){
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            when(it.action) {
+            when (it.action) {
                 ACTION_START_OR_RESUME_SERVICE -> {
-                    if(isFirstRun) {
+                    if (isFirstRun) {
                         startForegroundService()
                         isFirstRun = false
                     } else {
@@ -130,10 +120,11 @@ class CyclingTrackerService : LifecycleService(){
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun pauseService() {
-        isTracking.postValue(false)
-        isTimerEnabled = false
-    }
+    private var isTimerEnabled = false
+    private var lapTime = 0L
+    private var timeRun = 0L
+    private var timeStarted = 0L
+    private var lastSecondTimestamp = 0L
 
     private fun startTimer() {
         addEmptyPolyline()
@@ -154,6 +145,11 @@ class CyclingTrackerService : LifecycleService(){
             }
             timeRun += lapTime
         }
+    }
+
+    private fun pauseService() {
+        isTracking.postValue(false)
+        isTimerEnabled = false
     }
 
     private fun updateNotificationTrackingState(isTracking: Boolean) {
@@ -178,15 +174,15 @@ class CyclingTrackerService : LifecycleService(){
         }
         if(!serviceKilled) {
             curNotificationBuilder = baseNotificationBuilder
-                .addAction(R.drawable.ic_pause_black_24dp, notificationActionText, pendingIntent)
+                    .addAction(R.drawable.ic_pause_black_24dp, notificationActionText, pendingIntent)
             notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
-        if(isTracking) {
-            if(TrackingUtility.hasLocationPermissions(this)) {
+        if (isTracking) {
+            if (TrackingUtility.hasLocationPermissions(this)) {
                 val request = LocationRequest.create().apply {
                     interval = LOCATION_UPDATE_INTERVAL
                     fastestInterval = FASTEST_LOCATION_INTERVAL
@@ -206,9 +202,9 @@ class CyclingTrackerService : LifecycleService(){
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
-            if(isTracking.value!!) {
+            if (isTracking.value!!) {
                 result?.locations?.let { locations ->
-                    for(location in locations) {
+                    for (location in locations) {
                         addPathPoint(location)
                         Timber.d("NEW LOCATION: ${location.latitude}, ${location.longitude}")
                     }
@@ -248,12 +244,11 @@ class CyclingTrackerService : LifecycleService(){
         timeRunInSeconds.observe(this, Observer {
             if(!serviceKilled) {
                 val notification = curNotificationBuilder
-                    .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000L))
+                        .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000L))
                 notificationManager.notify(NOTIFICATION_ID, notification.build())
             }
         })
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(notificationManager: NotificationManager) {
@@ -264,6 +259,4 @@ class CyclingTrackerService : LifecycleService(){
         )
         notificationManager.createNotificationChannel(channel)
     }
-
-
 }
