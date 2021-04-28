@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.sportapp.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
@@ -15,12 +16,8 @@ import com.example.sportapp.Constant.Constant.MAP_ZOOM
 import com.example.sportapp.Constant.Constant.POLYLINE_COLOR
 import com.example.sportapp.Constant.Constant.POLYLINE_WIDTH
 import com.example.sportapp.Data.History
-import com.example.sportapp.HistoryModelFactory
-import com.example.sportapp.HistoryViewModel
-import com.example.sportapp.R
 import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.Polyline
-import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,20 +34,13 @@ import java.util.*
 
 import java.util.jar.Manifest
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
  * Use the [RecyclingTrackerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks, IUseBottomNav {
     private var _binding: FragmentRecyclingTrackerBinding? = null
     private val binding get() = _binding!!
     private val historyViewModel: HistoryViewModel by viewModels{
@@ -65,19 +55,10 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
         return binding.root
@@ -129,17 +110,23 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
             val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis-curTimeInMillis)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
             val history = History(
+                    img = bmp,
                 mode = SchedulerAddActivity.CYCLING,
-                result = distanceInMeters,
+                result = distanceInMeters/1000f,
                 date = date,
                 startTime = startTime,
                 endTime = endTime
             )
             historyViewModel.insert(history)
+            Snackbar.make(
+                    requireActivity().findViewById(R.id.rootView),
+                    "Run saved successfully",
+                    Snackbar.LENGTH_LONG
+            ).show()
+            stopRun()
             val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
             intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
             startActivity(intent)
-            stopRun()
         }
     }
 
@@ -222,7 +209,7 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
     }
 
     private fun showCancelTrackingDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Cancel the Run?")
             .setMessage("Are you sure to cancel the current run and delete all its data?")
             .setIcon(R.drawable.ic_delete)
@@ -238,7 +225,8 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
     private fun stopRun() {
         sendCommandToService(ACTION_STOP_SERVICE)
-        findNavController().navigate(R.id.NewsActivity)
+        var intent = Intent(context, NewsActivity::class.java)
+        intent?.let{it -> context?.startActivity(it)}
     }
 
     private fun updateTracking(isTracking: Boolean) {
@@ -344,24 +332,5 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecyclingTrackerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecyclingTrackerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

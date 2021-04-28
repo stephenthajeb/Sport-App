@@ -134,7 +134,8 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
 
     private fun navigateToTrackingFragmentIfNeeded(intent: Intent?) {
         if(intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
-            NavHostFragment().findNavController().navigate(R.id.action_global_trackingFragment)
+            var intents = Intent(this, TrainingTrackerActivity::class.java)
+            intents?.let{it -> this.startActivity(it)}
         }
     }
 
