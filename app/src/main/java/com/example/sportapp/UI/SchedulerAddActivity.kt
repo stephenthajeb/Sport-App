@@ -152,16 +152,15 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
                     isAuto = tempIsAuto,
                     startTime = startTime,
                     finishTime = endTime,
-                    days = tempDays.joinToString(separator = ",")
+                    days = if (tempFreq == R.id.rb_freq_custom) tempDays.joinToString(separator = ",") else null
                 )
-                if (date !== null) schedule.date = date
+                if (date != null) schedule.date = date
 
                 val data = Intent()
                 data.putExtra(EXTRA_SCHEDULE,schedule)
                 setResult(RESULT_OK,data)
                 finish()
             }
-            //Todo: save to schedule database, activate job scheduler, alarm manager, redirect to fragment main
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
     }

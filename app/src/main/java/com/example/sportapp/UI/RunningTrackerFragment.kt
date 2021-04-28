@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.sportapp.*
 import com.example.sportapp.Data.History
+import com.example.sportapp.Receiver.TrainingReceiver
 import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.FragmentRunningTrackerBinding
@@ -23,6 +24,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RunningTrackerFragment : Fragment() {
+    companion object {
+        const val EXTRA_STEPS = "steps"
+    }
+
     private var isTraining: Boolean = false
     private var steps: Float = 0f
     private var binding: FragmentRunningTrackerBinding? = null
@@ -30,19 +35,23 @@ class RunningTrackerFragment : Fragment() {
     private val historyViewModel: HistoryViewModel by viewModels {
         HistoryModelFactory((activity?.application as SportApp).historyDAO)
     }
-
-
-    companion object {
-        const val EXTRA_STEPS = "steps"
+    private val trackerReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            steps =
+                intent.getFloatExtra(RunningTrackerService.STEPS_TRACKED, steps)
+            binding?.tvProgress?.text = "$steps steps"
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (activity !== null) LocalBroadcastManager.getInstance(requireActivity())
+        LocalBroadcastManager.getInstance(requireActivity())
             .registerReceiver(
                 trackerReceiver,
                 IntentFilter(RunningTrackerService.ACTION_TRACKING)
             )
+
+
         if (savedInstanceState != null) {
             steps = savedInstanceState.getFloat(EXTRA_STEPS, 0f)
             isTraining = savedInstanceState.getBoolean(RunningTrackerService.EXTRA_IS_TRAINING)
@@ -59,11 +68,13 @@ class RunningTrackerFragment : Fragment() {
         return binding!!.root
     }
 
-
     override fun onResume() {
         super.onResume()
         //when user in app, hide notification,track result shows in app UI
-        setForegroundTracking(false)
+        if (isTraining) {
+            setForegroundTracking(false)
+            Toast.makeText(context, "Tracking as background service", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -75,9 +86,11 @@ class RunningTrackerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         //when leave app show tracking as notification
-        setForegroundTracking(true)
+        if (isTraining) {
+            setForegroundTracking(true)
+            Toast.makeText(context, "Tracking as foreground service", Toast.LENGTH_SHORT).show()
+        }
     }
-
 
     private fun setForegroundTracking(activate: Boolean) {
         val intent = Intent(activity, RunningTrackerService::class.java)
@@ -89,8 +102,8 @@ class RunningTrackerFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        if (activity !== null) LocalBroadcastManager.getInstance(requireActivity())
-            .unregisterReceiver(trackerReceiver)
+        LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(trackerReceiver)
+        Toast.makeText(context, "Stop tracking", Toast.LENGTH_SHORT).show()
         super.onDestroy()
     }
 
@@ -113,9 +126,14 @@ class RunningTrackerFragment : Fragment() {
                 binding?.tvProgress?.text = ""
                 Toast.makeText(context, "Saving training record", Toast.LENGTH_SHORT).show()
                 try {
-                    val date = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault()).format(startDate?.time)
-                    val startTime = SimpleDateFormat("HH:mm",Locale.getDefault()).format(startDate?.time)
-                    val endTime = SimpleDateFormat("HH:mm",Locale.getDefault()).format(Calendar.getInstance().time)
+                    val date =
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(startDate?.time)
+                    val startTime =
+                        SimpleDateFormat("HH:mm", Locale.getDefault()).format(startDate?.time)
+                    val endTime = SimpleDateFormat(
+                        "HH:mm",
+                        Locale.getDefault()
+                    ).format(Calendar.getInstance().time)
                     val history = History(
                         mode = SchedulerAddActivity.RUNNING,
                         result = steps,
@@ -135,11 +153,5 @@ class RunningTrackerFragment : Fragment() {
         }
     }
 
-    private val trackerReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            steps =
-                intent.getFloatExtra(RunningTrackerService.STEPS_TRACKED, steps)
-            binding?.tvProgress?.text = "$steps steps"
-        }
-    }
+
 }

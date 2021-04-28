@@ -37,16 +37,14 @@ class RunningTrackerService : Service(), SensorEventListener {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("service","masuk")
+        Toast.makeText(this,"Tracker services starts",Toast.LENGTH_SHORT).show()
     }
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             isForeground = it.getBooleanExtra(EXTRA_IS_FOREGROUND, false)
             isTraining = it.getBooleanExtra(EXTRA_IS_TRAINING,false)
         }
-        Log.d("service",isForeground.toString())
         setSensors(on=true)
         if (!isTraining){
             stopForeground(true)
@@ -142,7 +140,6 @@ class RunningTrackerService : Service(), SensorEventListener {
             .setContentIntent(contentIntent)
             .setAutoCancel(true)
 //            .addAction()//cancel
-//            .addAction()//training
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -155,7 +152,7 @@ class RunningTrackerService : Service(), SensorEventListener {
             channel.vibrationPattern = longArrayOf(1000, 1000, 1000, 1000, 1000)
             notificationBuilder.setChannelId(TRAINING)
             notificationManager.createNotificationChannel(channel)
-            //SetAutoCancel gimana wkwk ?
+            //Todo: Set Dismissable gimana wkwk ?
         }
 
         return notificationBuilder.build()
@@ -166,7 +163,6 @@ class RunningTrackerService : Service(), SensorEventListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("service","destroy")
     }
 
 }
