@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sportapp">
-
     <uses-feature android:name="eandroid.hardware.sensor.stepcounter" />
     <uses-feature android:name="eandroid.hardware.sensor.stepdetector" />
 
@@ -20,9 +19,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SportApp">
-        <activity
-            android:name=".UI.HistoryDetailTrainingActivity"
-        />
+        <receiver
+            android:name="com.example.sportapp.Receiver.TrainingReceiver"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <activity android:name=".UI.HistoryDetailTrainingActivity" />
 
         <activity android:name=".UI.HistoryDetailActivity">
             <nav-graph android:value="@navigation/navigation" />
@@ -33,7 +35,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <service android:name=".Service.CyclingTrackerService"
+        <service
+            android:name=".Service.CyclingTrackerService"
             android:foregroundServiceType="location" />
 
         <activity
@@ -56,7 +59,5 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
     </application>
-
 </manifest>

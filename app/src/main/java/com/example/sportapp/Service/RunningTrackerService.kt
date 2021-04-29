@@ -38,7 +38,7 @@ class RunningTrackerService : Service(), SensorEventListener {
     override fun onCreate() {
         super.onCreate()
         Log.d("test","service start")
-        Toast.makeText(this,"Tracker services starts",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this,"Tracker service starts",Toast.LENGTH_SHORT).show()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -48,6 +48,7 @@ class RunningTrackerService : Service(), SensorEventListener {
         }
         setSensors(on=true)
         if (!isTraining){
+            Toast.makeText(this,"Tracker services stop",Toast.LENGTH_SHORT).show()
             stopForeground(true)
             stopSelf()
             setSensors(on=false)
@@ -62,9 +63,7 @@ class RunningTrackerService : Service(), SensorEventListener {
 
         if (on){
             if (stepsSensor == null){
-                Toast.makeText(this, "Step Sensor not found. Activate dummy sensor", Toast.LENGTH_SHORT).show()
-                //Dummy sensor for testing Service. Todo: Delete later
-                Toast.makeText(this, "Accelerometer", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Step Sensor not found. Activate Accelerometer", Toast.LENGTH_SHORT).show()
                 sensorManager?.registerListener(
                     this,
                     dummySensor,
@@ -82,7 +81,6 @@ class RunningTrackerService : Service(), SensorEventListener {
         } else {
             sensorManager?.unregisterListener(this,stepsSensor)
             sensorManager?.unregisterListener(this,dummySensor)
-
         }
     }
 
