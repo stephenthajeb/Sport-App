@@ -157,6 +157,7 @@ class CyclingTrackerService : LifecycleService() {
         val pendingIntent = if(isTracking) {
             val pauseIntent = Intent(this, CyclingTrackerService::class.java).apply {
                 action = ACTION_PAUSE_SERVICE
+
             }
             PendingIntent.getService(this, 1, pauseIntent, FLAG_UPDATE_CURRENT)
         } else {

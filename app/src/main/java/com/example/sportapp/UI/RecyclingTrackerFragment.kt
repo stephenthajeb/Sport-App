@@ -3,9 +3,13 @@ package com.example.sportapp.UI
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.sportapp.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
@@ -17,6 +21,7 @@ import com.example.sportapp.Data.History
 import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.Polyline
 import com.example.sportapp.UI.Reusable.TrackingUtility
+import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,8 +33,6 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.lifecycle.Observer
-import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 
 
 class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), EasyPermissions.PermissionCallbacks, IUseBottomNav {
@@ -83,12 +86,12 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         }
 
         map?.moveCamera(
-            CameraUpdateFactory.newLatLngBounds(
-                bounds.build(),
-                binding.mapView.width,
-                binding.mapView.height,
-                (binding.mapView.height * 0.05f).toInt()
-            )
+                CameraUpdateFactory.newLatLngBounds(
+                        bounds.build(),
+                        binding.mapView.width,
+                        binding.mapView.height,
+                        (binding.mapView.height * 0.05f).toInt()
+                )
         )
     }
 
@@ -96,27 +99,25 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         map?.snapshot { bmp ->
             var distanceInMeters = 0f
             for(polyline in pathPoints) {
-                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline).toInt()
+                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
             }
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
-            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis-curTimeInMillis)
+            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis - curTimeInMillis)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
+            Log.d("fragment","Mode: ${SchedulerAddActivity.CYCLING} Result: ${distanceInMeters} Date: ${date} StartTime: ${startTime} Endtime: ${endTime}")
             val history = History(
                     img = bmp,
-                mode = SchedulerAddActivity.CYCLING,
-                result = distanceInMeters/1000f,
-                date = date,
-                startTime = startTime,
-                endTime = endTime
+                    mode = SchedulerAddActivity.CYCLING,
+                    result = distanceInMeters,
+                    date = date,
+                    startTime = startTime,
+                    endTime = endTime
             )
             historyViewModel.insert(history)
-            Snackbar.make(
-                    requireActivity().findViewById(R.id.rootView),
-                    "Run saved successfully",
-                    Snackbar.LENGTH_LONG
-            ).show()
             sendCommandToService(ACTION_STOP_SERVICE)
-            stopRun()
+            val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
+            intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
+            startActivity(intent)
         }
     }
 
@@ -132,20 +133,20 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         }
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             EasyPermissions.requestPermissions(
-                this,
-                "You need to accept location permissions to use this app.",
-                0,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                    this,
+                    "You need to accept location permissions to use this app.",
+                    0,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
             )
         } else {
             EasyPermissions.requestPermissions(
-                this,
-                "You need to accept location permissions to use this app.",
-                0,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    this,
+                    "You need to accept location permissions to use this app.",
+                    0,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
         }
     }
@@ -204,22 +205,13 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             .setMessage("Are you sure to cancel the current run and delete all its data?")
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
-                stopRun()
+                sendCommandToService(ACTION_STOP_SERVICE)
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
             .create()
         dialog.show()
-    }
-
-    private fun stopRun() {
-        sendCommandToService(ACTION_STOP_SERVICE)
-        var bindings: ActivityTrainingTrackerBinding = ActivityTrainingTrackerBinding.inflate(layoutInflater)
-        bindings.bottomNavView.menu.getItem(1).isChecked = false
-        setUpActiveMenu(bindings.bottomNavView.menu,0)
-        var intent = Intent(context, NewsActivity::class.java)
-        intent?.let{it -> context?.startActivity(it)}
     }
 
     private fun updateTracking(isTracking: Boolean) {
@@ -237,10 +229,10 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     private fun moveCameraToUser() {
         if(pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()) {
             map?.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    pathPoints.last().last(),
-                    MAP_ZOOM
-                )
+                    CameraUpdateFactory.newLatLngZoom(
+                            pathPoints.last().last(),
+                            MAP_ZOOM
+                    )
             )
         }
     }
@@ -279,9 +271,9 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
