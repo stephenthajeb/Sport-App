@@ -47,37 +47,32 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
             val freq = item.frequency.toString()
             val startDate = item.startTime.toString()
             val finalDate = item.finishTime.toString()
+            val target = item.target.toString()
 
-            lateinit var date: String
-            lateinit var buildDescDate: String
-            lateinit var DescDate: String
-            var target = item.target.toString()
-            var buildIds = ids
-            var strs: Array<String>?
-            var days: List<String?>?
-
-            if (freq.equals("ONCE")) {
-                date = formatter.format(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.date)).toString()
-                buildDescDate = "$date:  $startDate - $finalDate"
-            } else if (freq.equals("CUSTOM")) {
-                strs = item.days?.split(",")?.toTypedArray()
-                days = strs?.map { getDays.get(it) }
-                DescDate = days.toString().replace("[", "").replace("]", "")
-                buildDescDate = "Days on: $DescDate $startDate - $finalDate"
-            } else if (freq.equals("EVERYDAY")){
-                buildDescDate = "Everyday on: $startDate - $finalDate"
-            }
-
-
-            if (item.isAuto == 1) {
-                buildIds = "$ids - SCHEDULED $freq"
-            } else {
-                buildIds = "$ids - REMIND ON $freq"
-            }
 
             with(itemView){
-                binding.tvDescDate.text = buildDescDate
-                binding.tvId.text = buildIds
+                if (freq.equals("ONCE")) {
+                    val date = formatter.format(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.date)).toString()
+                    val buildDescDate = "$date:  $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                } else if (freq.equals("CUSTOM")) {
+                    val strs = item.days?.split(",")?.toTypedArray()
+                    val days = strs?.map { getDays.get(it) }
+                    val DescDate = days.toString().replace("[", "").replace("]", "")
+                    val buildDescDate = "Days on: $DescDate $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                } else if (freq.equals("EVERYDAY")){
+                    val buildDescDate = "Everyday on: $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                }
+
+                if (item.isAuto == 1) {
+                    val buildIds = "$ids - SCHEDULED $freq"
+                    binding.tvId.text = buildIds
+                } else {
+                    val buildIds = "$ids - REMIND ON $freq"
+                    binding.tvId.text = buildIds
+                }
                 binding.tvDistance.text = "Your Goal: $target m"
                 if (!mode.equals("RUNNING")) {
                     binding.ivImg.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_directions_bike_50))
