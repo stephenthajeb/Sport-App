@@ -9,6 +9,9 @@ import com.example.sportapp.Data.History
 import com.example.sportapp.Data.News
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowHistoryBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
     private val historyList = MutableLiveData<ArrayList<History>>()
@@ -50,7 +53,10 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         private val binding = ItemRowHistoryBinding.bind(itemView)
 
         fun bind(item: History) {
-            val generalDate = item.date.toString()
+            val formatter = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.date)
+
+            val generalDate = formatter.format(date).toString()
             val startDate = item.startTime.toString()
             val finalDate = item.endTime.toString()
 
@@ -59,13 +65,17 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
             val mode = item.mode.toString()
 
             val buildDesc = "$ids - $mode"
-            val buildDescDate = "$generalDate: $startDate - $finalDate"
+            val buildDescDate = "$generalDate:  $startDate - $finalDate"
             val buildDistance = "Jarak Tempuh: $dist M"
 
             with(itemView) {
                 binding.tvId.text = buildDesc
                 binding.tvDescDate.text = buildDescDate
                 binding.tvDistance.text = buildDistance
+
+                if (!mode.equals("RUNNING")) {
+                    binding.ivImg.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_directions_bike_50))
+                }
             }
         }
     }
