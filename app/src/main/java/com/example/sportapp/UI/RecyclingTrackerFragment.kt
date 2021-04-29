@@ -1,12 +1,14 @@
 package com.example.sportapp.UI
 
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,6 +33,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.lang.Error
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,8 +70,16 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             toggleRun()
         }
         binding.btnFinishRun.setOnClickListener {
+            Toast.makeText(requireContext(), "Saving training record", Toast.LENGTH_SHORT).show()
             zoomToSeeWholeTrack()
-            endRunAndSaveToDb()
+            try {
+                endRunAndSaveToDb()
+            }
+            catch (e: Error){
+                Toast.makeText(context, "Error in saving this record", Toast.LENGTH_SHORT)
+                        .show()
+                activity?.onBackPressed()
+            }
         }
         binding.mapView.getMapAsync {
             map = it
@@ -98,13 +109,12 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     private fun endRunAndSaveToDb() {
         map?.snapshot { bmp ->
             var distanceInMeters = 0f
-            for(polyline in pathPoints) {
+            for (polyline in pathPoints) {
                 distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
             }
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
             val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis - curTimeInMillis)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
-            Log.d("fragment","Mode: ${SchedulerAddActivity.CYCLING} Result: ${distanceInMeters} Date: ${date} StartTime: ${startTime} Endtime: ${endTime}")
             val history = History(
                     img = bmp,
                     mode = SchedulerAddActivity.CYCLING,
@@ -115,9 +125,11 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             )
             historyViewModel.insert(history)
             sendCommandToService(ACTION_STOP_SERVICE)
-            val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
-            intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
-            startActivity(intent)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(requireContext(), HistoryDetailTrainingActivity::class.java)
+                intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
+                startActivity(intent)
+            }, 500)
         }
     }
 
@@ -281,37 +293,37 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
 
     override fun onResume() {
         super.onResume()
-        binding.mapView?.onResume()
+        binding.mapView.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        binding.mapView?.onStart()
+        binding.mapView.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        binding.mapView?.onStop()
+        binding.mapView.onStop()
     }
 
     override fun onPause() {
         super.onPause()
-        binding.mapView?.onPause()
+        binding.mapView.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        binding.mapView?.onLowMemory()
+        binding.mapView.onLowMemory()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        binding.mapView?.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView?.onDestroy()
+        binding.mapView.onDestroy()
     }
 
     override fun onDestroyView() {
