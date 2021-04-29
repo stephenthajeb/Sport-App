@@ -47,7 +47,8 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     private var map: GoogleMap? = null
     private var isTracking = false
     private var pathPoints = mutableListOf<Polyline>()
-    private var curTimeInMillis = 0L
+    private var distance : Double = 0.0
+    private var startDate : Calendar? = null
 
     private var menu: Menu? = null
 
@@ -68,6 +69,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         binding.mapView.onCreate(savedInstanceState)
         binding.btnToggleRun.setOnClickListener {
             toggleRun()
+            startDate = Calendar.getInstance()
         }
         binding.btnFinishRun.setOnClickListener {
             Toast.makeText(requireContext(), "Saving training record", Toast.LENGTH_SHORT).show()
@@ -113,7 +115,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
                 distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
             }
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
-            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis - curTimeInMillis)
+            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(startDate?.time)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
             val history = History(
                     img = bmp,
@@ -171,12 +173,14 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         CyclingTrackerService.pathPoints.observe(viewLifecycleOwner, Observer {
             pathPoints = it
             addLatestPolyline()
-            moveCameraToUser()
-        })
-        CyclingTrackerService.timeRunInMillis.observe(viewLifecycleOwner, Observer {
-            curTimeInMillis = it
-            val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
+            var distanceInMeters = 0f
+            for (polyline in pathPoints) {
+                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
+            }
+            CyclingTrackerService.distance.postValue(distanceInMeters.toDouble())
+            val formattedTime = "$distanceInMeters M"
             binding.tvTimer.text = formattedTime
+            moveCameraToUser()
         })
     }
 
@@ -197,7 +201,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if(curTimeInMillis > 0L) {
+        if(distance > 0f) {
             this.menu?.getItem(0)?.isVisible = true
         }
     }

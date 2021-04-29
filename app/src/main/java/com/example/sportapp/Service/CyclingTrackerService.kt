@@ -54,7 +54,6 @@ class CyclingTrackerService : LifecycleService() {
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    private val timeRunInSeconds = MutableLiveData<Long>()
 
     @Inject
     lateinit var baseNotificationBuilder: NotificationCompat.Builder
@@ -62,7 +61,7 @@ class CyclingTrackerService : LifecycleService() {
     lateinit var curNotificationBuilder: NotificationCompat.Builder
 
     companion object {
-        val timeRunInMillis = MutableLiveData<Long>()
+        val distance = MutableLiveData<Double>()
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<Polylines>()
     }
@@ -70,8 +69,6 @@ class CyclingTrackerService : LifecycleService() {
     private fun postInitialValues() {
         isTracking.postValue(false)
         pathPoints.postValue(mutableListOf())
-        timeRunInSeconds.postValue(0L)
-        timeRunInMillis.postValue(0L)
     }
 
     override fun onCreate() {
@@ -103,16 +100,13 @@ class CyclingTrackerService : LifecycleService() {
                         startForegroundService()
                         isFirstRun = false
                     } else {
-                        Timber.d("Resuming service...")
-                        startTimer()
+                        startTracking()
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
-                    Timber.d("Paused service")
                     pauseService()
                 }
                 ACTION_STOP_SERVICE -> {
-                    Timber.d("Stopped service")
                     killService()
                 }
             }
@@ -121,30 +115,12 @@ class CyclingTrackerService : LifecycleService() {
     }
 
     private var isTimerEnabled = false
-    private var lapTime = 0L
-    private var timeRun = 0L
-    private var timeStarted = 0L
-    private var lastSecondTimestamp = 0L
 
-    private fun startTimer() {
+    private fun startTracking() {
         addEmptyPolyline()
         isTracking.postValue(true)
-        timeStarted = System.currentTimeMillis()
+        distance.postValue(0.0)
         isTimerEnabled = true
-        CoroutineScope(Dispatchers.Main).launch {
-            while (isTracking.value!!) {
-                // time difference between now and timeStarted
-                lapTime = System.currentTimeMillis() - timeStarted
-                // post the new lapTime
-                timeRunInMillis.postValue(timeRun + lapTime)
-                if (timeRunInMillis.value!! >= lastSecondTimestamp + 1000L) {
-                    timeRunInSeconds.postValue(timeRunInSeconds.value!! + 1)
-                    lastSecondTimestamp += 1000L
-                }
-                delay(TIMER_UPDATE_INTERVAL)
-            }
-            timeRun += lapTime
-        }
     }
 
     private fun pauseService() {
@@ -230,7 +206,7 @@ class CyclingTrackerService : LifecycleService() {
     } ?: pathPoints.postValue(mutableListOf(mutableListOf()))
 
     private fun startForegroundService() {
-        startTimer()
+        startTracking()
         isTracking.postValue(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
@@ -242,10 +218,10 @@ class CyclingTrackerService : LifecycleService() {
 
         startForeground(NOTIFICATION_ID, baseNotificationBuilder.build())
 
-        timeRunInSeconds.observe(this, Observer {
+        distance.observe(this, {
             if(!serviceKilled) {
                 val notification = curNotificationBuilder
-                        .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000L))
+                        .setContentText("$it M")
                 notificationManager.notify(NOTIFICATION_ID, notification.build())
             }
         })
