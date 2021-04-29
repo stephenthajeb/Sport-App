@@ -63,7 +63,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
                 strs = item.days?.split(",")?.toTypedArray()
                 days = strs?.map { getDays.get(it) }
                 DescDate = days.toString().replace("[", "").replace("]", "")
-                buildDescDate = "Days on: $DescDate"
+                buildDescDate = "Days on: $DescDate $startDate - $finalDate"
             } else if (freq.equals("EVERYDAY")){
                 buildDescDate = "Everyday on: $startDate - $finalDate"
             }

@@ -40,12 +40,18 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
         super.onCreate(savedInstanceState)
         binding = ActivitySchedulerAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupNotSetDate()
         setUpBtnListener()
         setUpActiveMenu(binding.bottomNavView.menu,3)
         setUpMenuItemListener(binding.bottomNavView,this,3)
     }
 
     //Todo: onSaveInstanceState later
+
+    private fun setupNotSetDate() {
+        binding.tStart.text = "Time Start: Not Set"
+        binding.tEnd.text = "Time End: Not Set"
+    }
 
     private fun setUpBtnListener() {
         val timePicker = TimePickerFragment()
@@ -97,8 +103,17 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
         calendar.set(Calendar.MINUTE, minute)
         val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
         when (tag) {
-            TIME_PICKER_START_TAG -> startTime = formatter.format(calendar.time)
-            else -> endTime = formatter.format(calendar.time)
+            TIME_PICKER_START_TAG -> {
+                startTime = formatter.format(calendar.time)
+                val st = startTime.toString()
+                binding.tStart.text = "Time Start: $st"
+
+            }
+            else -> {
+                endTime = formatter.format(calendar.time)
+                val et = endTime.toString()
+                binding.tEnd.text = "Time End: $et"
+            }
         }
     }
 
