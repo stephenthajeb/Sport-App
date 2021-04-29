@@ -51,6 +51,7 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
     private fun setupNotSetDate() {
         binding.tStart.text = "Time Start: Not Set"
         binding.tEnd.text = "Time End: Not Set"
+        binding.dateNotify.text = "Date: Not Set"
     }
 
     private fun setUpBtnListener() {
@@ -95,6 +96,11 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
         calendar.set(year, month, dayOfMonth)
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         date = formatter.format(calendar.time)
+
+        val formatShow = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+        val dateShow = formatShow.format(calendar.time)
+
+        binding.dateNotify.text = "Date: $dateShow"
     }
 
     override fun onDialogTimeSet(tag: String?, hourOfDay: Int, minute: Int) {

@@ -98,11 +98,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_marginBottom="3dp"
                     android:text="Select a specific date" />
 
                 <Button
@@ -111,6 +112,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/ic_baseline_date_range_28"
+                    android:text="Date" />
+
+                <TextView
+                    android:id="@+id/date_notify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="17dp"
                     android:text="Date" />
 
             </LinearLayout>
@@ -187,6 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginBottom="3dp"
                 android:text="Select time" />
 
             <com.google.android.flexbox.FlexboxLayout
