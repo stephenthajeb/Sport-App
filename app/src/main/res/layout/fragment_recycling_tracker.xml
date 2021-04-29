@@ -5,71 +5,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.RecyclingTrackerFragment">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clInnerLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapView">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvTimer"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clInnerLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="00:00:00:00"
-            android:textSize="50sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnToggleRun"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mapView">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00:00"
+                android:textSize="50sp"
+                app:layout_constraintBottom_toTopOf="@+id/btnToggleRun"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnToggleRun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnFinishRun"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
+
+            <Button
+                android:id="@+id/btnFinishRun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finish Run"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btnToggleRun"
+                app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <com.google.android.gms.maps.MapView
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            map:uiCompass="true"
+            map:uiScrollGestures="true"
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toTopOf="@+id/clInnerLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleRun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnFinishRun"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFinishRun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Finish Run"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btnToggleRun"
-            app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <com.google.android.gms.maps.MapView
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        map:uiCompass="true"
-        map:uiScrollGestures="true"
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/clInnerLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
