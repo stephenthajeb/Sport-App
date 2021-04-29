@@ -11,7 +11,11 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import com.example.sportapp.Constant.Constant
+import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
+import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
 import com.example.sportapp.Service.CyclingTrackerService
@@ -57,17 +61,28 @@ class TrainingReceiver : BroadcastReceiver() {
                 intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, true)
                 context.startService(intent)
             } else {
-
+                Intent(context, CyclingTrackerService::class.java).also {
+                    it.action = ACTION_START_OR_RESUME_SERVICE
+                    context.startService(it)
+                }
             }
         }
 
         if (notifType == NOTIF_STOP_TRACKING && notifId != -1) {
             val trackingService =
                 if (mode == SchedulerAddActivity.RUNNING) RunningTrackerService::class.java else CyclingTrackerService::class.java
-            val intent = Intent(context, trackingService)
-            intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, true)
-            intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
-            context.startService(intent)
+            if (mode == SchedulerAddActivity.RUNNING){
+                val intent = Intent(context, trackingService)
+                intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, true)
+                intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
+                context.startService(intent)
+            }
+            else{
+                Intent(context, trackingService).also {
+                    it.action = ACTION_STOP_SERVICE
+                    context.startService(it)
+                }
+            }
         }
     }
 
