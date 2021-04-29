@@ -37,6 +37,7 @@ class RunningTrackerService : Service(), SensorEventListener {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("test","service start")
         Toast.makeText(this,"Tracker services starts",Toast.LENGTH_SHORT).show()
     }
 
@@ -139,7 +140,6 @@ class RunningTrackerService : Service(), SensorEventListener {
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentIntent(contentIntent)
             .setAutoCancel(true)
-//            .addAction()//cancel
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(

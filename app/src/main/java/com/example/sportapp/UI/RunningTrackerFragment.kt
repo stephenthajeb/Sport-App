@@ -5,20 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.sportapp.*
 import com.example.sportapp.Data.History
-import com.example.sportapp.Receiver.TrainingReceiver
 import com.example.sportapp.Service.RunningTrackerService
-import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.FragmentRunningTrackerBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,8 +46,6 @@ class RunningTrackerFragment : Fragment() {
                 trackerReceiver,
                 IntentFilter(RunningTrackerService.ACTION_TRACKING)
             )
-
-
         if (savedInstanceState != null) {
             steps = savedInstanceState.getFloat(EXTRA_STEPS, 0f)
             isTraining = savedInstanceState.getBoolean(RunningTrackerService.EXTRA_IS_TRAINING)
