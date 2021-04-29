@@ -3,48 +3,36 @@ package com.example.sportapp.UI
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import com.example.sportapp.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
+import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
 import com.example.sportapp.Constant.Constant.MAP_ZOOM
 import com.example.sportapp.Constant.Constant.POLYLINE_COLOR
 import com.example.sportapp.Constant.Constant.POLYLINE_WIDTH
-import com.example.sportapp.HistoryModelFactory
-import com.example.sportapp.HistoryViewModel
-import com.example.sportapp.R
+import com.example.sportapp.Data.History
 import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.Polyline
-import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.text.SimpleDateFormat
+import java.util.*
+import androidx.lifecycle.Observer
+import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 
-import java.util.jar.Manifest
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RecyclingTrackerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), EasyPermissions.PermissionCallbacks, IUseBottomNav {
     private var _binding: FragmentRecyclingTrackerBinding? = null
     private val binding get() = _binding!!
     private val historyViewModel: HistoryViewModel by viewModels{
@@ -53,20 +41,17 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
     private var map: GoogleMap? = null
     private var isTracking = false
     private var pathPoints = mutableListOf<Polyline>()
+    private var curTimeInMillis = 0L
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var menu: Menu? = null
+
+
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
         _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -78,11 +63,61 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         binding.btnToggleRun.setOnClickListener {
             toggleRun()
         }
+        binding.btnFinishRun.setOnClickListener {
+            zoomToSeeWholeTrack()
+            endRunAndSaveToDb()
+        }
         binding.mapView.getMapAsync {
             map = it
             addAllPolylines()
         }
         subscribeToObservers()
+    }
+
+    private fun zoomToSeeWholeTrack() {
+        val bounds = LatLngBounds.Builder()
+        for(polyline in pathPoints) {
+            for(pos in polyline) {
+                bounds.include(pos)
+            }
+        }
+
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds.build(),
+                binding.mapView.width,
+                binding.mapView.height,
+                (binding.mapView.height * 0.05f).toInt()
+            )
+        )
+    }
+
+    private fun endRunAndSaveToDb() {
+        map?.snapshot { bmp ->
+            var distanceInMeters = 0f
+            for(polyline in pathPoints) {
+                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline).toInt()
+            }
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
+            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis-curTimeInMillis)
+            val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
+            val history = History(
+                    img = bmp,
+                mode = SchedulerAddActivity.CYCLING,
+                result = distanceInMeters/1000f,
+                date = date,
+                startTime = startTime,
+                endTime = endTime
+            )
+            historyViewModel.insert(history)
+            Snackbar.make(
+                    requireActivity().findViewById(R.id.rootView),
+                    "Run saved successfully",
+                    Snackbar.LENGTH_LONG
+            ).show()
+            sendCommandToService(ACTION_STOP_SERVICE)
+            stopRun()
+        }
     }
 
     private fun sendCommandToService(action: String) =
@@ -125,14 +160,66 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
             addLatestPolyline()
             moveCameraToUser()
         })
+        CyclingTrackerService.timeRunInMillis.observe(viewLifecycleOwner, Observer {
+            curTimeInMillis = it
+            val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
+            binding.tvTimer.text = formattedTime
+        })
     }
 
     private fun toggleRun() {
         if(isTracking) {
+            menu?.getItem(0)?.isVisible = true
             sendCommandToService(ACTION_PAUSE_SERVICE)
         } else {
             sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_tracking_menu, menu)
+        this.menu = menu
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        if(curTimeInMillis > 0L) {
+            this.menu?.getItem(0)?.isVisible = true
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.miCancelTracking -> {
+                showCancelTrackingDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showCancelTrackingDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Cancel the Run?")
+            .setMessage("Are you sure to cancel the current run and delete all its data?")
+            .setIcon(R.drawable.ic_delete)
+            .setPositiveButton("Yes") { _, _ ->
+                stopRun()
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .create()
+        dialog.show()
+    }
+
+    private fun stopRun() {
+        sendCommandToService(ACTION_STOP_SERVICE)
+        var bindings: ActivityTrainingTrackerBinding = ActivityTrainingTrackerBinding.inflate(layoutInflater)
+        bindings.bottomNavView.menu.getItem(1).isChecked = false
+        setUpActiveMenu(bindings.bottomNavView.menu,0)
+        var intent = Intent(context, NewsActivity::class.java)
+        intent?.let{it -> context?.startActivity(it)}
     }
 
     private fun updateTracking(isTracking: Boolean) {
@@ -142,6 +229,7 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
             binding.btnFinishRun.visibility = View.VISIBLE
         } else {
             binding.btnToggleRun.text = "Stop"
+            menu?.getItem(0)?.isVisible = true
             binding.btnFinishRun.visibility = View.GONE
         }
     }
@@ -238,23 +326,6 @@ class RecyclingTrackerFragment : Fragment(), EasyPermissions.PermissionCallbacks
         super.onDestroyView()
         _binding = null
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecyclingTrackerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecyclingTrackerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
+
+
