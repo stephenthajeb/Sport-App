@@ -36,8 +36,10 @@ Detail versi library dapat ditemukan di file build.gradle
 - 13518072 / Muchammad Ibnu Sidqi
   - {{ tambahkan }}
 - 13518102 / Mohamad Falah Sutawindaya
-  - Fix (nambahin field di view model) dan menambah constraint layout untuk news, history, schedule (list, add)
+  - Fix (menambahkan field (+lebih deskriptif) di view model) untuk news, history, schedule (list, add)
+  - Menambah constraint layout fleksibel untuk news, history, schedule (list, add)
   - Theming (spacing, icon, etc)
+  - Data set notifier pada beberapa text view
 - 13518150 / Stephen Thajeb
   - Membuat bottom navigation dan juga interface IBottomNavigation untuk menghandle navigasi antar halaman
   - Membuat halaman sport news (halaman utama dan halaman detail dengan menggunakan WebView) dan responsiveness halaman tersebut
