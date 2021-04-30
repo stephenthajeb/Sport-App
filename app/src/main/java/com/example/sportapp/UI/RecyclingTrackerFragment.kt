@@ -128,7 +128,8 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             historyViewModel.insert(history)
             sendCommandToService(ACTION_STOP_SERVICE)
             Handler(Looper.getMainLooper()).postDelayed({
-                val intent = Intent(requireContext(), HistoryDetailTrainingActivity::class.java)
+                val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
+                intent.putExtra("history", history)
                 startActivity(intent)
             }, 500)
         }
