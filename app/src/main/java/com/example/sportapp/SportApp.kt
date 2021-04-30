@@ -13,3 +13,4 @@ class SportApp: Application() {
     val scheduleDAO by lazy {database.scheduleDAO()}
     val historyDAO by lazy {database.historyDAO()}
 }
+
