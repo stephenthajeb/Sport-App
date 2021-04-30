@@ -78,6 +78,6 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     fun getNewsList():ArrayList<News> = newsList
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: Schedule)
+        fun onItemClicked(data: News)
     }
 }

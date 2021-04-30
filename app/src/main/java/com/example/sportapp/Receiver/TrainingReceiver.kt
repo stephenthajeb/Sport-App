@@ -217,6 +217,7 @@ class TrainingReceiver : BroadcastReceiver() {
             else schedule.finishTime!!.split(":").map { it.toInt() }.toTypedArray()
 
         val calendarList = ArrayList<Calendar>()
+        //Todo : validate if calendar instance has passed
         when (schedule.frequency) {
             SchedulerAddActivity.FREQ_ONCE -> {
                 val dateArr = schedule.date!!.split("-").map { it.toInt() }.toTypedArray()
