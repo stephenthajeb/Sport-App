@@ -39,7 +39,7 @@ Detail versi library dapat ditemukan di file build.gradle
   - Fix (menambahkan field (+lebih deskriptif) di view model) untuk news, history, schedule (list, add)
   - Menambah constraint layout fleksibel untuk news, history, schedule (list, add)
   - Theming (spacing, icon, etc)
-  - Data set notifier pada beberapa text view
+  - Data set notifier pada beberapa field text view
 - 13518150 / Stephen Thajeb
   - Membuat bottom navigation dan juga interface IBottomNavigation untuk menghandle navigasi antar halaman
   - Membuat halaman sport news (halaman utama dan halaman detail dengan menggunakan WebView) dan responsiveness halaman tersebut
