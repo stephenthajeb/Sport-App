@@ -22,25 +22,6 @@ Aplikasi memerlukan minimal Android SDK 19 (Kitkat 4.4 keatas), dan dibuat denga
 - Library X: untuk ...
 - {{ tambahkan bila ada }}
 
-## Screenshot Alplikasi
-
-1.  News
-    ![alternative_text](./ss/7.jpg)
-    ![alternative_text](./ss/13.jpg)
-
-2.  Scheduler (List, Add)
-    ![alternative_text](./ss/2.jpg)
-    ![alternative_text](./ss/4.jpg)
-    ![alternative_text](./ss/5.jpg)
-
-3.  Tracker
-    ![alternative_text](./ss/8.jpg)
-    ![alternative_text](./ss/9.jpg)
-
-4.  History Tracker (List, Detail)
-    ![alternative_text](./ss/10.jpg)
-    ![alternative_text](./ss/12.jpg)
-
 ## Pembagian Kerja
 
 - 13518072 / Muchammad Ibnu Sidqi
@@ -50,3 +31,26 @@ Aplikasi memerlukan minimal Android SDK 19 (Kitkat 4.4 keatas), dan dibuat denga
   - Theming (spacing, icon, etc)
 - 13518150 / Stephen Thajeb
   - {{ tambahkan }}
+
+## Screenshot Alplikasi
+
+1.  News
+
+    ![alternative_text](./ss/7.jpg)
+    ![alternative_text](./ss/13.jpg)
+
+2.  Scheduler (List, Add)
+
+    ![alternative_text](./ss/2.jpg)
+    ![alternative_text](./ss/4.jpg)
+    ![alternative_text](./ss/5.jpg)
+
+3.  Tracker
+
+    ![alternative_text](./ss/8.jpg)
+    ![alternative_text](./ss/9.jpg)
+
+4.  History Tracker (List, Detail)
+
+    ![alternative_text](./ss/10.jpg)
+    ![alternative_text](./ss/12.jpg)
