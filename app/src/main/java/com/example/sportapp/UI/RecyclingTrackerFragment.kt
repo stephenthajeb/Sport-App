@@ -230,6 +230,9 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
                 sendCommandToService(ACTION_STOP_SERVICE)
+                Intent(requireContext(), NewsActivity::class.java).also{
+                    requireContext().startActivity(it)
+                }
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
