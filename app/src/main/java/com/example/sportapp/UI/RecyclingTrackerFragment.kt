@@ -1,12 +1,12 @@
 package com.example.sportapp.UI
 
 import android.content.Intent
-import android.content.Intent.getIntent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -23,17 +23,15 @@ import com.example.sportapp.Data.History
 import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.Polyline
 import com.example.sportapp.UI.Reusable.TrackingUtility
-import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.lang.Error
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -80,7 +78,6 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             catch (e: Error){
                 Toast.makeText(context, "Error in saving this record", Toast.LENGTH_SHORT)
                         .show()
-                activity?.onBackPressed()
             }
         }
         binding.mapView.getMapAsync {
@@ -117,7 +114,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
             val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(startDate?.time)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
-            val history = History(
+            var history = History(
                     img = bmp,
                     mode = SchedulerAddActivity.CYCLING,
                     result = distanceInMeters,
@@ -127,10 +124,22 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             )
             historyViewModel.insert(history)
             sendCommandToService(ACTION_STOP_SERVICE)
+            var datas = History(
+                    mode = history.mode,
+                    startTime = history.startTime,
+                    date = history.date,
+                    endTime = history.endTime,
+                    result = history.result
+            )
+            val outputStream = ByteArrayOutputStream()
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            val byteArray: ByteArray = outputStream.toByteArray()
             Handler(Looper.getMainLooper()).postDelayed({
-                val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
-                intent.putExtra("history", history)
-                startActivity(intent)
+                Intent(requireContext(), HistoryDetailTrainingActivity::class.java).also {
+                    it.putExtra(HistoryDetailFragment.EXTRA_HISTORY, datas)
+                    it.putExtra("Bitmap", byteArray)
+                    requireContext().startActivity(it)
+                }
             }, 500)
         }
     }

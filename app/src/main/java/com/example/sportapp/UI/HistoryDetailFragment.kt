@@ -2,6 +2,7 @@ package com.example.sportapp.UI
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import com.example.sportapp.Data.Schedule
 import com.example.sportapp.UI.Adapter.HistoryAdapter
 import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.FragmentHistoryDetailBinding
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 
 
@@ -54,7 +56,23 @@ class HistoryDetailFragment : Fragment() {
             override fun onItemClicked(data: History) {
                 val orientation = resources.configuration.orientation
                 val bundle = Bundle()
-                bundle.putParcelable(EXTRA_HISTORY,data)
+                if(data.mode == SchedulerAddActivity.CYCLING){
+                    var datas = History(
+                            mode = data.mode,
+                            startTime = data.startTime,
+                            date = data.date,
+                            endTime = data.endTime,
+                            result = data.result
+                    )
+                    bundle.putParcelable(EXTRA_HISTORY,datas)
+                    val outputStream = ByteArrayOutputStream()
+                    data.img?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    val byteArray: ByteArray = outputStream.toByteArray()
+                    bundle.putByteArray("Bitmap", byteArray)
+                }
+                else{
+                    bundle.putParcelable(EXTRA_HISTORY,data)
+                }
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE){
                     //Navigate to fragment
                     findNavController().navigate(R.id.action_historyDetailFragment2_to_historyDetailTrainingFragment2,bundle)
