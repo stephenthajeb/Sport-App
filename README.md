@@ -34,7 +34,12 @@ Detail versi library dapat ditemukan di file build.gradle
 ## Pembagian Kerja
 
 - 13518072 / Muchammad Ibnu Sidqi
-  - {{ tambahkan }}
+  - Membuat Cycling Tracker
+  - Melakukan integrasi map dengan layout pada Tracker
+  - Melakukan integrasi penyimpanan gambar pada database
+  - Melakukan integrasi antara tracker dengan detail history 
+  - Membuat layout untuk detail history
+  - Melakukan integrasi cycling tracker dengan TrainingService
 - 13518102 / Mohamad Falah Sutawindaya
   - Fix (menambahkan field (+lebih deskriptif) di view model) untuk news, history, schedule (list, add)
   - Menambah constraint layout fleksibel untuk news, history, schedule (list, add)
