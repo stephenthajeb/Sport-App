@@ -26,7 +26,7 @@ abstract class SportAppDatabase: RoomDatabase(){
                     context.applicationContext,
                     SportAppDatabase::class.java,
                     "schedule_database"
-                ).build()
+                ).allowMainThreadQueries().build()
                 INSTANCE = instance
                 instance
             }

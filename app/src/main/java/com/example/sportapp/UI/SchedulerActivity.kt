@@ -123,7 +123,7 @@ class SchedulerActivity : AppCompatActivity() {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         //Todo: change isTesting to false in production
         if (schedule.isAuto == 1) {
-            trainingReceiver.setTrackingNotification(this,schedule,false)
+            trainingReceiver.setTrackingNotification(this,schedule,true)
         } else {
             trainingReceiver.setReminderNotification(this,schedule,true)
         }

@@ -14,13 +14,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
-import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.UI.SchedulerAddActivity
 import java.util.*
 import kotlin.collections.ArrayList
 
 class TrainingReceiver : BroadcastReceiver() {
+    private var pendingServiceIntent: PendingIntent? = null
+
     companion object {
         const val EXTRA_MESSAGE = "message"
         const val EXTRA_NOTIF_TYPE = "type"
@@ -56,18 +57,19 @@ class TrainingReceiver : BroadcastReceiver() {
                 intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, true)
                 intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, true)
                 context.startService(intent)
+
             } else {
 
             }
         }
 
         if (notifType == NOTIF_STOP_TRACKING && notifId != -1) {
-            val trackingService =
-                if (mode == SchedulerAddActivity.RUNNING) RunningTrackerService::class.java else CyclingTrackerService::class.java
-            val intent = Intent(context, trackingService)
-            intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, true)
-            intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
-            context.startService(intent)
+            if (mode == SchedulerAddActivity.RUNNING) {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.cancel(pendingServiceIntent)
+            } else {
+                //Todo: Cycling
+            }
         }
     }
 
@@ -77,15 +79,15 @@ class TrainingReceiver : BroadcastReceiver() {
         intent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_TRACKING)
         intent.putExtra(EXTRA_NOTIF_ID, REQ_CODE_TRACKING)
         intent.putExtra(EXTRA_MODE, schedule.mode)
-        val pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_TRACKING, intent, 0)
-        setUpAlarmManager(context, pendingIntent, schedule, isTestingMode, true)
+        pendingServiceIntent = PendingIntent.getBroadcast(context, REQ_CODE_TRACKING, intent, 0)
+        setUpAlarmManager(context, pendingServiceIntent!!, schedule, isTestingMode, true)
 
         /* Schedule finish training */
         val stopIntent = Intent(context, TrainingReceiver::class.java)
-        stopIntent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_STOP_TRACKING)
+        stopIntent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_TRACKING)
         stopIntent.putExtra(EXTRA_NOTIF_ID, REQ_CODE_STOP)
         stopIntent.putExtra(EXTRA_MODE, schedule.mode)
-        val stopPendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_STOP, stopIntent,0)
+        val stopPendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_STOP, stopIntent, 0)
         setUpAlarmManager(context, stopPendingIntent, schedule, isTestingMode, false)
     }
 
@@ -201,8 +203,9 @@ class TrainingReceiver : BroadcastReceiver() {
         schedule: Schedule,
         isStartSchedule: Boolean
     ): ArrayList<Calendar> {
-        val timeArr = if (isStartSchedule) schedule.startTime!!.split(":").map { it.toInt() }.toTypedArray()
-        else schedule.finishTime!!.split(":").map { it.toInt() }.toTypedArray()
+        val timeArr =
+            if (isStartSchedule) schedule.startTime!!.split(":").map { it.toInt() }.toTypedArray()
+            else schedule.finishTime!!.split(":").map { it.toInt() }.toTypedArray()
 
         val calendarList = ArrayList<Calendar>()
         when (schedule.frequency) {
