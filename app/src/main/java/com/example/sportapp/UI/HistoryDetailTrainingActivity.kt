@@ -11,6 +11,8 @@ import com.example.sportapp.*
 import com.example.sportapp.Data.History
 import com.example.sportapp.databinding.ActivityHistoryDetailTrainingBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HistoryDetailTrainingActivity : AppCompatActivity(),IUseBottomNav {
 
@@ -33,9 +35,16 @@ class HistoryDetailTrainingActivity : AppCompatActivity(),IUseBottomNav {
         if(history == null){
             history = intent.extras?.getParcelable(HistoryDetailFragment.EXTRA_HISTORY)
         }
-        binding.dateDetail.text = history?.date
-        binding.endDate.text = history?.endTime
-        binding.startDate.text  = history?.startTime
+
+        val formatter = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(history?.date)
+        val buildDate = formatter.format(date).toString()
+        val endTime = history?.endTime
+        val startTime = history?.startTime
+
+        binding.dateDetail.text = "Your training on $buildDate"
+        binding.endDate.text = "Your training end on $endTime"
+        binding.startDate.text  = "Your training start on $startTime"
         var bytes : ByteArray? = intent.getByteArrayExtra("Bitmap")
         if(bytes==null){
             bytes = intent.extras?.getByteArray("Bitmap")
@@ -46,8 +55,9 @@ class HistoryDetailTrainingActivity : AppCompatActivity(),IUseBottomNav {
         else{
             binding.imageHistory.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
         }
+        val result = history?.result
         binding.mode.text = history?.mode
-        binding.result.text = history?.result.toString()
+        binding.result.text = "Your distance $result m"
         if(history?.mode == SchedulerAddActivity.RUNNING){
             binding.logoMode.setImageResource(R.drawable.ic_baseline_directions_run_50)
         }
