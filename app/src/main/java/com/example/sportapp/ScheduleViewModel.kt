@@ -8,8 +8,9 @@ import kotlinx.coroutines.runBlocking
 
 class ScheduleViewModel(private val scheduleDAO: ScheduleDAO): ViewModel() {
     val schedules : LiveData<List<Schedule>> = scheduleDAO.getAllSchedules().asLiveData()
-
     suspend fun insert(schedule: Schedule) : Long = scheduleDAO.insert(schedule)
+
+    suspend fun delete(schedule:Schedule) =  scheduleDAO.deleteSchedule(schedule)
 
 }
 

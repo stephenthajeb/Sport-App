@@ -11,13 +11,22 @@ Sports app adalah aplikasi berbasis android untuk menunjang aktivitas olahraga j
 Aplikasi memerlukan minimal Android SDK 19 (Kitkat 4.4 keatas), dan dibuat dengan bahasa pemprograman kotlin.
 
 ## Langkah Menjalankan Aplikasi 
-1.  Import repository pada android studio
-2.  Pilih device untuk dijalankan (Melalui AVD manager lalu jalankan emulator) atau menghubungkan device android dengan USB debugging
+1.  Clone repository pada android studio
+2.  Pilih device untuk dijalankan (Melalui AVD manager lalu jalankan emulator) atau menghubungkan device android dengan USB debugging (Rekomendasi minSDK 21, dan target SDk 30)
 3.  Untuk menjalankan klik tombol run sebelah opsi device yang dipilih
 
 ## Library Yang di Pakai
-- Library X: untuk ... 
-- {{ tambahkan bila ada }}
+- Material.IO untuk material komponen
+- Glide untuk image loader
+- Async HTTP untuk remote database
+- Dagger untuk dependency Injection
+- Room untuk local database sqlite
+- Navigation ui ktx, navigation fragment untuk menggunakan nav-graph
+- Google play service location untuk menggunakan GPS
+- Easy Permission untuk menggeluarkan pop up notifikasi izin aplikasi
+- Flexbox untuk menggunakan layout flexbox
+
+Detail versi library dapat ditemukan di file build.gradle 
 
 ## Screenshot Alplikasi
 {{ menyusul }}
@@ -29,4 +38,18 @@ Aplikasi memerlukan minimal Android SDK 19 (Kitkat 4.4 keatas), dan dibuat denga
 	- Fix (nambahin field di view model) dan menambah constraint layout untuk news, history, schedule (list, add)
 	- Theming (spacing, icon, etc)
 - 13518150 / Stephen Thajeb
-	- {{ tambahkan }}
+	- Membuat bottom navigation dan juga interface IBottomNavigation untuk menghandle navigasi antar halaman
+	- Membuat halaman sport news (halaman utama dan halaman detail dengan menggunakan WebView) dan responsiveness halaman tersebut
+	- Membuat fitur fetch data dari api news
+	- Membuat halaman Training Tracker dengan Tablayout
+	- Membuat fitur deteksi langkah dan kompas
+	- Membuat TrainingService dan Receiver Tracker yang dapat menjadwalkan, menjalankan, dan menyimpan data training secara otomatis
+	- Membuat halamaman Scheduler dan halaman Add Scheduler
+	- Membuat halaman History Utama
+	- Membuat keseluruhan class Adapter dalam aplikasi
+	- Mendesign dan membuat keselurahan database dan data class aplikasi
+	- Menset up database dengan struktur room, DAO, viewmodel 
+
+
+
+

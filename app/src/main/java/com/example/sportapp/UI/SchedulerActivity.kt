@@ -1,33 +1,25 @@
 package com.example.sportapp.UI
 
 import android.app.*
-import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.observe
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
 import com.example.sportapp.Receiver.TrainingReceiver
 import com.example.sportapp.ScheduleModelFactory
 import com.example.sportapp.ScheduleViewModel
-import com.example.sportapp.Service.CyclingTrackerService
-import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Adapter.ScheduleAdapter
 import com.example.sportapp.databinding.ActivitySchedulerBinding
 import kotlinx.coroutines.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class SchedulerActivity : AppCompatActivity() {
     private lateinit var adapter: ScheduleAdapter

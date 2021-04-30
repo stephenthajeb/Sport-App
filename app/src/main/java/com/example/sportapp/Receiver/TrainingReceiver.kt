@@ -18,6 +18,7 @@ import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
+import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.UI.SchedulerAddActivity
 import java.util.*
@@ -26,17 +27,11 @@ import kotlin.collections.ArrayList
 class TrainingReceiver : BroadcastReceiver() {
     companion object {
         const val EXTRA_MESSAGE = "message"
-        //const val EXTRA_NOTIF_TYPE = "type"
-        //const val NOTIF_REMIND = "remind"
-        //const val NOTIF_TRACKING = "tracking"
         const val EXTRA_NOTIF_ID = "notif id"
         const val NOTIF_TITLE = "Sport App"
         const val EXTRA_ICON = "icon"
         const val EXTRA_MODE = "mode"
         const val NOTIF_STOP_TRACKING = "stop tracking"
-        const val REQ_CODE_REMIND = 0
-        const val REQ_CODE_TRACKING = 1
-        const val REQ_CODE_STOP = 2
         const val ACTION_TRACKING = "ACTION_TRACKING"
         const val ACTION_STOP_TRACKING = "ACTION_STOP_TRACKING"
         const val ACTION_REMIND = "ACTION_REMIND"
@@ -76,8 +71,9 @@ class TrainingReceiver : BroadcastReceiver() {
                     intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, false)
                     intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
                     context.stopService(intent)
+
             } else {
-                Intent(context, trackingService).also {
+                Intent(context, CyclingTrackerService::class.java).also {
                     it.action = ACTION_STOP_SERVICE
                     context.startService(it)
                 }

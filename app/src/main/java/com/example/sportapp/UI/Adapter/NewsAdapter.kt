@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sportapp.Data.News
+import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowNewsBinding
 import java.text.SimpleDateFormat
@@ -77,6 +78,6 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     fun getNewsList():ArrayList<News> = newsList
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: News)
+        fun onItemClicked(data: Schedule)
     }
 }
