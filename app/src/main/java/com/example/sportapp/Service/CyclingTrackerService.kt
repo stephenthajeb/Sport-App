@@ -198,6 +198,11 @@ class CyclingTrackerService : LifecycleService() {
                 pathPoints.postValue(this)
             }
         }
+        var distanceInMeters = 0.0
+        for (polyline in pathPoints.value!!) {
+            distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
+        }
+        distance.postValue(distanceInMeters)
     }
 
     private fun addEmptyPolyline() = pathPoints.value?.apply {
@@ -221,7 +226,7 @@ class CyclingTrackerService : LifecycleService() {
         distance.observe(this, {
             if(!serviceKilled) {
                 val notification = curNotificationBuilder
-                        .setContentText("$it M")
+                        .setContentText("%.2f M".format(it))
                 notificationManager.notify(NOTIFICATION_ID, notification.build())
             }
         })

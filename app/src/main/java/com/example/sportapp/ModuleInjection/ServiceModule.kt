@@ -50,6 +50,6 @@ object ServiceModule {
             .setOngoing(true)
             .setSmallIcon(R.drawable.ic_baseline_directions_bike_50)
             .setContentTitle("Cycling")
-            .setContentText("0 M")
+            .setContentText("0,00 M")
             .setContentIntent(pendingIntent)
 }

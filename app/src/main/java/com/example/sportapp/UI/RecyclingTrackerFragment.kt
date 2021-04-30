@@ -172,14 +172,13 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         CyclingTrackerService.pathPoints.observe(viewLifecycleOwner, Observer {
             pathPoints = it
             addLatestPolyline()
-            var distanceInMeters = 0f
-            for (polyline in pathPoints) {
-                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
-            }
-            CyclingTrackerService.distance.postValue(distanceInMeters.toDouble())
-            val formattedTime = "$distanceInMeters M"
-            binding.tvTimer.text = formattedTime
             moveCameraToUser()
+        })
+
+        CyclingTrackerService.distance.observe(viewLifecycleOwner, {
+            distance = it
+            val formattedTime = "%.2f M".format(distance)
+            binding.tvTimer.text = formattedTime
         })
     }
 
