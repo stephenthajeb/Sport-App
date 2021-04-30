@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
@@ -24,7 +23,6 @@ import com.example.sportapp.Constant.Constant.LOCATION_UPDATE_INTERVAL
 import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_ID
 import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_NAME
 import com.example.sportapp.Constant.Constant.NOTIFICATION_ID
-import com.example.sportapp.Constant.Constant.TIMER_UPDATE_INTERVAL
 import com.example.sportapp.R
 import com.example.sportapp.UI.Reusable.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -34,10 +32,6 @@ import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -48,8 +42,8 @@ typealias Polylines = MutableList<Polyline>
 @AndroidEntryPoint
 class CyclingTrackerService : LifecycleService() {
 
-    var isFirstRun = true
-    var serviceKilled = false
+    private var isFirstRun = true
+    private var serviceKilled = false
 
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -58,7 +52,7 @@ class CyclingTrackerService : LifecycleService() {
     @Inject
     lateinit var baseNotificationBuilder: NotificationCompat.Builder
 
-    lateinit var curNotificationBuilder: NotificationCompat.Builder
+    private lateinit var curNotificationBuilder: NotificationCompat.Builder
 
     companion object {
         val distance = MutableLiveData<Double>()
@@ -77,7 +71,7 @@ class CyclingTrackerService : LifecycleService() {
         postInitialValues()
         fusedLocationProviderClient = FusedLocationProviderClient(this)
 
-        isTracking.observe(this, Observer {
+        isTracking.observe(this, {
             updateLocationTracking(it)
             updateNotificationTrackingState(it)
         })
@@ -176,7 +170,7 @@ class CyclingTrackerService : LifecycleService() {
         }
     }
 
-    val locationCallback = object : LocationCallback() {
+    private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             if (isTracking.value!!) {

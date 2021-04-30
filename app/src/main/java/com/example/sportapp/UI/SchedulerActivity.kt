@@ -73,7 +73,7 @@ class SchedulerActivity : AppCompatActivity() {
     }
 
     private fun setUpBtnListener() {
-        binding?.fabAddNewSchedule?.setOnClickListener {
+        binding.fabAddNewSchedule.setOnClickListener {
             val intent = Intent(this, SchedulerAddActivity::class.java)
             startActivityForResult(intent, REQ_ADD_SCHEDULE)
         }
@@ -109,7 +109,7 @@ class SchedulerActivity : AppCompatActivity() {
                         newId = defferedNewId.await().toInt()
                     }
                     Log.d("test","newId $newId")
-                    if (!newId.equals(-1)) signalingReceiver(schedule, newId)
+                    if (newId != -1) signalingReceiver(schedule, newId)
                 }
 
             } catch (e: Error) {

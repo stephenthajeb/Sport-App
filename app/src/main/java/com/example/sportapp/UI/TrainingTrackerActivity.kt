@@ -1,21 +1,14 @@
 package com.example.sportapp.UI
 
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import androidx.fragment.app.viewModels
-import com.example.sportapp.HistoryModelFactory
-import com.example.sportapp.HistoryViewModel
+import androidx.appcompat.app.AppCompatActivity
 import com.example.sportapp.IUseBottomNav
-import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Adapter.TrainingTrackerFragmentAdapter
 import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.round
 
@@ -126,15 +119,4 @@ class TrainingTrackerActivity : AppCompatActivity(), SensorEventListener, IUseBo
     }
 
 
-    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
-        super.setUpActiveMenu(menu, pageIdx)
-    }
-
-    override fun setUpMenuItemListener(
-        bottomNav: BottomNavigationView,
-        context: Context,
-        currentPageIdx: Int
-    ) {
-        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
-    }
 }

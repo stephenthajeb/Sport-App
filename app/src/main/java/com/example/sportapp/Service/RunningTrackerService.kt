@@ -11,15 +11,10 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.sportapp.Data.History
-import com.example.sportapp.Data.HistoryDAO
-import com.example.sportapp.HistoryModelFactory
-import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.SchedulerAddActivity
@@ -27,9 +22,7 @@ import com.example.sportapp.UI.TrainingTrackerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.*
 

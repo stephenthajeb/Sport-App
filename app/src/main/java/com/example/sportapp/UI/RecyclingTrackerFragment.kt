@@ -2,7 +2,6 @@ package com.example.sportapp.UI
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -11,7 +10,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.sportapp.*
 import com.example.sportapp.Constant.Constant.ACTION_PAUSE_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
@@ -55,7 +53,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
         _binding = FragmentRecyclingTrackerBinding.inflate(inflater, container, false)
         return binding.root
@@ -114,7 +112,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
             val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(startDate?.time)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
-            var history = History(
+            val history = History(
                     img = bmp,
                     mode = SchedulerAddActivity.CYCLING,
                     result = distanceInMeters,
@@ -124,7 +122,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             )
             historyViewModel.insert(history)
             sendCommandToService(ACTION_STOP_SERVICE)
-            var datas = History(
+            val datas = History(
                     mode = history.mode,
                     startTime = history.startTime,
                     date = history.date,
@@ -175,11 +173,11 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     }
 
     private fun subscribeToObservers() {
-        CyclingTrackerService.isTracking.observe(viewLifecycleOwner, Observer {
+        CyclingTrackerService.isTracking.observe(viewLifecycleOwner, {
             updateTracking(it)
         })
 
-        CyclingTrackerService.pathPoints.observe(viewLifecycleOwner, Observer {
+        CyclingTrackerService.pathPoints.observe(viewLifecycleOwner, {
             pathPoints = it
             addLatestPolyline()
             moveCameraToUser()

@@ -1,24 +1,16 @@
 package com.example.sportapp.UI
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.sportapp.Constant.Constant.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.sportapp.Data.News
 import com.example.sportapp.IUseBottomNav
-import com.example.sportapp.R
 import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.ActivityNewsBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -126,18 +118,6 @@ class NewsActivity : AppCompatActivity(), IUseBottomNav {
         })
     }
 
-
-    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
-        super.setUpActiveMenu(menu, pageIdx)
-    }
-
-    override fun setUpMenuItemListener(
-        bottomNav: BottomNavigationView,
-        context: Context,
-        currentPageIdx: Int
-    ) {
-        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
-    }
 
     private fun showLoading(state: Boolean) {
         if (state) {

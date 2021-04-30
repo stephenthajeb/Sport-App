@@ -1,26 +1,21 @@
 package com.example.sportapp.UI
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sportapp.*
 import com.example.sportapp.Data.History
-import com.example.sportapp.Data.News
-import com.example.sportapp.Data.Schedule
+import com.example.sportapp.HistoryModelFactory
+import com.example.sportapp.HistoryViewModel
+import com.example.sportapp.R
+import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Adapter.HistoryAdapter
-import com.example.sportapp.UI.Adapter.NewsAdapter
 import com.example.sportapp.databinding.FragmentHistoryDetailBinding
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
@@ -35,10 +30,6 @@ class HistoryDetailFragment : Fragment() {
 
     companion object{
         const val EXTRA_HISTORY = "history"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -57,7 +48,7 @@ class HistoryDetailFragment : Fragment() {
                 val orientation = resources.configuration.orientation
                 val bundle = Bundle()
                 if(data.mode == SchedulerAddActivity.CYCLING){
-                    var datas = History(
+                    val datas = History(
                             mode = data.mode,
                             startTime = data.startTime,
                             date = data.date,

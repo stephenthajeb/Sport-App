@@ -1,16 +1,15 @@
 package com.example.sportapp
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.Data.ScheduleDAO
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class ScheduleViewModel(private val scheduleDAO: ScheduleDAO): ViewModel() {
     val schedules : LiveData<List<Schedule>> = scheduleDAO.getAllSchedules().asLiveData()
     suspend fun insert(schedule: Schedule) : Long = scheduleDAO.insert(schedule)
-
-    suspend fun delete(schedule:Schedule) =  scheduleDAO.deleteSchedule(schedule)
 
 }
 
