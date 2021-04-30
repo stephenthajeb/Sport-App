@@ -11,6 +11,10 @@ class HistoryViewModel(private val historyDAO: HistoryDAO): ViewModel() {
     fun insert(history: History) = viewModelScope.launch {
         val result = historyDAO.insert(history)
     }
+
+    fun getHistoryById(id: Int): LiveData<History> = historyDAO.retriveSingleHistoryById(id).asLiveData()
+
+    //fun getHistoriesOnDate(date:String,month:String,year:String):LiveData<List<History>> = historyDAO.getAllHistoriesOnDate(date,month,year).asLiveData()
     fun getHistoriesOnDate(date:String):LiveData<List<History>> = historyDAO.getAllHistoriesOnDate(date).asLiveData()
 
     fun getLastHistory(): History = historyDAO.getLastHistoryRecord()

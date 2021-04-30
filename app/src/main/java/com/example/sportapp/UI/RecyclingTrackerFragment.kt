@@ -1,12 +1,14 @@
 package com.example.sportapp.UI
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,16 +23,15 @@ import com.example.sportapp.Data.History
 import com.example.sportapp.Service.CyclingTrackerService
 import com.example.sportapp.Service.Polyline
 import com.example.sportapp.UI.Reusable.TrackingUtility
-import com.example.sportapp.databinding.ActivityTrainingTrackerBinding
 import com.example.sportapp.databinding.FragmentRecyclingTrackerBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,7 +45,8 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     private var map: GoogleMap? = null
     private var isTracking = false
     private var pathPoints = mutableListOf<Polyline>()
-    private var curTimeInMillis = 0L
+    private var distance : Double = 0.0
+    private var startDate : Calendar? = null
 
     private var menu: Menu? = null
 
@@ -65,10 +67,18 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
         binding.mapView.onCreate(savedInstanceState)
         binding.btnToggleRun.setOnClickListener {
             toggleRun()
+            startDate = Calendar.getInstance()
         }
         binding.btnFinishRun.setOnClickListener {
+            Toast.makeText(requireContext(), "Saving training record", Toast.LENGTH_SHORT).show()
             zoomToSeeWholeTrack()
-            endRunAndSaveToDb()
+            try {
+                endRunAndSaveToDb()
+            }
+            catch (e: Error){
+                Toast.makeText(context, "Error in saving this record", Toast.LENGTH_SHORT)
+                        .show()
+            }
         }
         binding.mapView.getMapAsync {
             map = it
@@ -98,14 +108,13 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
     private fun endRunAndSaveToDb() {
         map?.snapshot { bmp ->
             var distanceInMeters = 0f
-            for(polyline in pathPoints) {
+            for (polyline in pathPoints) {
                 distanceInMeters += TrackingUtility.calculatePolylineLength(polyline)
             }
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
-            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().timeInMillis - curTimeInMillis)
+            val startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(startDate?.time)
             val endTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
-            Log.d("fragment","Mode: ${SchedulerAddActivity.CYCLING} Result: ${distanceInMeters} Date: ${date} StartTime: ${startTime} Endtime: ${endTime}")
-            val history = History(
+            var history = History(
                     img = bmp,
                     mode = SchedulerAddActivity.CYCLING,
                     result = distanceInMeters,
@@ -115,9 +124,23 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             )
             historyViewModel.insert(history)
             sendCommandToService(ACTION_STOP_SERVICE)
-            val intent = Intent(context, HistoryDetailTrainingActivity::class.java)
-            intent.putExtra(HistoryDetailFragment.EXTRA_HISTORY, history)
-            startActivity(intent)
+            var datas = History(
+                    mode = history.mode,
+                    startTime = history.startTime,
+                    date = history.date,
+                    endTime = history.endTime,
+                    result = history.result
+            )
+            val outputStream = ByteArrayOutputStream()
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            val byteArray: ByteArray = outputStream.toByteArray()
+            Handler(Looper.getMainLooper()).postDelayed({
+                Intent(requireContext(), HistoryDetailTrainingActivity::class.java).also {
+                    it.putExtra(HistoryDetailFragment.EXTRA_HISTORY, datas)
+                    it.putExtra("Bitmap", byteArray)
+                    requireContext().startActivity(it)
+                }
+            }, 500)
         }
     }
 
@@ -161,9 +184,10 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             addLatestPolyline()
             moveCameraToUser()
         })
-        CyclingTrackerService.timeRunInMillis.observe(viewLifecycleOwner, Observer {
-            curTimeInMillis = it
-            val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
+
+        CyclingTrackerService.distance.observe(viewLifecycleOwner, {
+            distance = it
+            val formattedTime = "%.2f M".format(distance)
             binding.tvTimer.text = formattedTime
         })
     }
@@ -185,7 +209,7 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if(curTimeInMillis > 0L) {
+        if(distance > 0f) {
             this.menu?.getItem(0)?.isVisible = true
         }
     }
@@ -206,6 +230,9 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
                 sendCommandToService(ACTION_STOP_SERVICE)
+                Intent(requireContext(), NewsActivity::class.java).also{
+                    requireContext().startActivity(it)
+                }
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
@@ -281,37 +308,37 @@ class RecyclingTrackerFragment : Fragment(R.layout.fragment_recycling_tracker), 
 
     override fun onResume() {
         super.onResume()
-        binding.mapView?.onResume()
+        binding.mapView.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        binding.mapView?.onStart()
+        binding.mapView.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        binding.mapView?.onStop()
+        binding.mapView.onStop()
     }
 
     override fun onPause() {
         super.onPause()
-        binding.mapView?.onPause()
+        binding.mapView.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        binding.mapView?.onLowMemory()
+        binding.mapView.onLowMemory()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        binding.mapView?.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView?.onDestroy()
+        binding.mapView.onDestroy()
     }
 
     override fun onDestroyView() {

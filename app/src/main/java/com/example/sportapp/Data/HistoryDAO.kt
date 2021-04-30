@@ -20,11 +20,14 @@ interface HistoryDAO{
 
     @Query ("SELECT * FROM history_table WHERE date LIKE :date")
     fun getAllHistoriesOnDate(date:String): Flow<List<History>>
+
+    @Query("SELECT * FROM history_table WHERE id=:id LIMIT 1")
+    fun retriveSingleHistoryById(id: Int): Flow<History>
     
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(history: History):Long
 
 
