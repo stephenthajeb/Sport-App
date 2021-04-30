@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.example.sportapp.Data.History
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ActivityHistoryDetailTrainingBinding
@@ -22,6 +24,8 @@ class HistoryDetailTrainingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.title = "History Detail Fragment"
+        Toast.makeText(context,"History Detail Fragment",Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateView(

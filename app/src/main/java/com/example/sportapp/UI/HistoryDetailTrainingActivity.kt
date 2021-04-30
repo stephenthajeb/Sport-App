@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class HistoryDetailTrainingActivity : AppCompatActivity(),IUseBottomNav {
+
     private val historyViewModel: HistoryViewModel by viewModels {
         HistoryModelFactory((application as SportApp).historyDAO)
     }
@@ -30,7 +31,8 @@ class HistoryDetailTrainingActivity : AppCompatActivity(),IUseBottomNav {
         setContentView(binding.root)
         setUpActiveMenu(binding.bottomNavView.menu, 2)
         setUpMenuItemListener(binding.bottomNavView, this, 2)
-        Log.d("test","historydeteailTraining")
+        title = "History Detail"
+        Toast.makeText(this,"History Detail Fragment",Toast.LENGTH_SHORT).show()
 
         try {
             history = intent.getParcelableExtra(HistoryDetailFragment.EXTRA_HISTORY)//Tracker
