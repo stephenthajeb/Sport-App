@@ -25,6 +25,7 @@ import com.example.sportapp.Service.RunningTrackerService
 import com.example.sportapp.SportApp
 import com.example.sportapp.UI.Adapter.ScheduleAdapter
 import com.example.sportapp.databinding.ActivitySchedulerBinding
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -107,9 +108,16 @@ class SchedulerActivity : AppCompatActivity() {
         if (requestCode == REQ_ADD_SCHEDULE && resultCode == RESULT_OK) {
             val schedule = data?.getParcelableExtra<Schedule>(SchedulerAddActivity.EXTRA_SCHEDULE)
             try {
-                schedule?.let {
-                    scheduleViewModel.insert(schedule = it)
-                    signalingReceiver(it)
+
+                var newId = -1
+                if (schedule!= null){
+                    runBlocking {
+                        val defferedNewId =
+                            GlobalScope.async { scheduleViewModel.insert(schedule) }
+                        newId = defferedNewId.await().toInt()
+                    }
+                    Log.d("test","newId $newId")
+                    if (!newId.equals(-1)) signalingReceiver(schedule, newId)
                 }
 
             } catch (e: Error) {
@@ -119,13 +127,13 @@ class SchedulerActivity : AppCompatActivity() {
     }
 
 
-    private fun signalingReceiver(schedule: Schedule) {
+    private fun signalingReceiver(schedule: Schedule, newId: Int) {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         //Todo: change isTesting to false in production
         if (schedule.isAuto == 1) {
-            trainingReceiver.setTrackingNotification(this,schedule,true)
+            trainingReceiver.setTrackingNotification(this, schedule, true, newId)
         } else {
-            trainingReceiver.setReminderNotification(this,schedule,true)
+            trainingReceiver.setReminderNotification(this, schedule, true, newId)
         }
     }
 

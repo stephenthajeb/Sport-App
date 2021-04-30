@@ -45,14 +45,11 @@ class RunningTrackerService : Service(), SensorEventListener {
         const val EXTRA_IS_FOREGROUND = "isForeground"
         const val EXTRA_IS_TRAINING = "isTraining"
         const val ACTION_TRACKING = "ACTION_TRACKING"
-        const val ACTION_STOP = "ACTION STOP"
-        const val ACTION_SAVING = "ACTION SAVING"
         const val STEPS_TRACKED = "stepsTrack"
         const val NOTIF_TRACKING = 1
         const val TRAINING = "Training"
         const val NOTIF_CHANNEL_NAME = "Running Training"
         const val NOTIF_TRACKING_REQUEST_CODE = 200
-        const val EXTRA_HISTORY = "history"
     }
 
     override fun onCreate() {
@@ -69,7 +66,6 @@ class RunningTrackerService : Service(), SensorEventListener {
         setSensors(on = true)
         if (!isTraining) {
             Toast.makeText(this, "Tracker services stop", Toast.LENGTH_SHORT).show()
-            stopForeground(true)
             stopSelf()
             setSensors(on = false)
         }
@@ -184,8 +180,10 @@ class RunningTrackerService : Service(), SensorEventListener {
         return notificationBuilder.build()
     }
 
-
     override fun onDestroy() {
+        Toast.makeText(this, "Running tracker terminated",Toast.LENGTH_SHORT)
+        Log.d("test","destroying service")
+        stopForeground(true)
         super.onDestroy()
         val appScope = CoroutineScope(SupervisorJob())
         appScope.launch(Dispatchers.IO) {
