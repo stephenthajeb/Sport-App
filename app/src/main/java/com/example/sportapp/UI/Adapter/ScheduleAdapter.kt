@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sportapp.Data.Schedule
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowScheduleBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
     //private val scheduleList = ArrayList<Schedule>()
@@ -35,9 +39,44 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
         private val binding = ItemRowScheduleBinding.bind(itemView)
 
         fun bind(item: Schedule){
+            val getDays: HashMap<String, String> = hashMapOf("1" to "Mon", "2" to "Tue", "3" to "Wed", "4" to "Thurs", "5" to "Fri", "6" to "Sat", "7" to "Sun")
+
+            val formatter = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+            val mode = item.mode.toString()
+            val ids = item.id.toString()
+            val freq = item.frequency.toString()
+            val startDate = item.startTime.toString()
+            val finalDate = item.finishTime.toString()
+            val target = item.target.toString()
+
+
             with(itemView){
-                binding.tvId.text = item.id.toString()
-                binding.tvFreq.text = item.frequency
+                if (freq.equals("ONCE")) {
+                    val date = formatter.format(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.date)).toString()
+                    val buildDescDate = "$date:  $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                } else if (freq.equals("CUSTOM")) {
+                    val strs = item.days?.split(",")?.toTypedArray()
+                    val days = strs?.map { getDays.get(it) }
+                    val DescDate = days.toString().replace("[", "").replace("]", "")
+                    val buildDescDate = "Days on: $DescDate $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                } else if (freq.equals("EVERYDAY")){
+                    val buildDescDate = "Everyday on: $startDate - $finalDate"
+                    binding.tvDescDate.text = buildDescDate
+                }
+
+                if (item.isAuto == 1) {
+                    val buildIds = "$ids - SCHEDULED $freq"
+                    binding.tvId.text = buildIds
+                } else {
+                    val buildIds = "$ids - REMIND ON $freq"
+                    binding.tvId.text = buildIds
+                }
+                binding.tvDistance.text = "Your Goal: $target m"
+                if (!mode.equals("RUNNING")) {
+                    binding.ivImg.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_directions_bike_50))
+                }
             }
         }
     }
