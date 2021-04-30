@@ -4,20 +4,18 @@ import androidx.lifecycle.*
 import com.example.sportapp.Data.History
 import com.example.sportapp.Data.HistoryDAO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class HistoryViewModel(private val historyDAO: HistoryDAO): ViewModel() {
-    val histories : LiveData<List<History>> = historyDAO.getAllHistories().asLiveData()
 
     fun insert(history: History) = viewModelScope.launch {
         val result = historyDAO.insert(history)
     }
 
-    fun getHistoryById(id: Int): LiveData<History> = historyDAO.retriveSingleHistoryById(id).asLiveData()
-
     //fun getHistoriesOnDate(date:String,month:String,year:String):LiveData<List<History>> = historyDAO.getAllHistoriesOnDate(date,month,year).asLiveData()
     fun getHistoriesOnDate(date:String):LiveData<List<History>> = historyDAO.getAllHistoriesOnDate(date).asLiveData()
 
-    fun getLastHistory(): History = historyDAO.getLastHistoryRecord()
+     fun getLastHistory(): History = historyDAO.getLastHistoryRecord()
 }
 
 class HistoryModelFactory(private val historyDAO: HistoryDAO): ViewModelProvider.Factory{

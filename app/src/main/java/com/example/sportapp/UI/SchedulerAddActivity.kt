@@ -186,17 +186,5 @@ class SchedulerAddActivity : AppCompatActivity(), DatePickerFragment.DialogDateL
         }
     }
 
-    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
-        super.setUpActiveMenu(menu, pageIdx)
-    }
-
-    override fun setUpMenuItemListener(
-        bottomNav: BottomNavigationView,
-        context: Context,
-        currentPageIdx: Int
-    ) {
-        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
-    }
-
 
 }

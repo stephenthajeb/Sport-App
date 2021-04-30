@@ -11,9 +11,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import com.example.sportapp.Constant.Constant
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
 import com.example.sportapp.Constant.Constant.ACTION_STOP_SERVICE
 import com.example.sportapp.Data.Schedule
@@ -162,7 +160,7 @@ class TrainingReceiver : BroadcastReceiver() {
                     )
                 }
                 SchedulerAddActivity.FREQ_CUSTOM -> {
-                    calendarList.forEach { it ->
+                    calendarList.forEach {
                         alarmManager.setRepeating(
                             AlarmManager.RTC_WAKEUP,
                             it.timeInMillis,
@@ -239,7 +237,7 @@ class TrainingReceiver : BroadcastReceiver() {
             }
             SchedulerAddActivity.FREQ_CUSTOM -> {
                 val days = schedule.days!!.split(",").map { it.toInt() }.toTypedArray()
-                days.forEach { it ->
+                days.forEach {
                     val calendar = Calendar.getInstance()
                     calendar.set(Calendar.DAY_OF_WEEK, it)
                     calendar.set(Calendar.HOUR_OF_DAY, timeArr[0])
@@ -250,8 +248,6 @@ class TrainingReceiver : BroadcastReceiver() {
         }
         return calendarList
     }
-
-    private fun cancelSchedule() {}
 
 
 }

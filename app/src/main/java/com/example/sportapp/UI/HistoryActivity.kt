@@ -14,14 +14,8 @@ import java.util.*
 
 class HistoryActivity : AppCompatActivity(), IUseBottomNav{
     private lateinit var binding: ActivityHistoryBinding
-    private val historyViewModel: HistoryViewModel by viewModels{
-        HistoryModelFactory((application as SportApp).historyDAO)
-    }
 
     companion object{
-        const val EXTRA_DATE = "date"
-        const val EXTRA_MONTH = "month"
-        const val EXTRA_YEAR = "year"
         const val EXTRA_CALENDAR = "calendar"
     }
 
@@ -34,18 +28,6 @@ class HistoryActivity : AppCompatActivity(), IUseBottomNav{
         setUpActiveMenu(binding.bottomNavView.menu,2)
         setUpMenuItemListener(binding.bottomNavView,this,2)
         setUpDatePickerListener()
-    }
-
-    override fun setUpActiveMenu(menu: Menu, pageIdx: Int) {
-        super.setUpActiveMenu(menu, pageIdx)
-    }
-
-    override fun setUpMenuItemListener(
-        bottomNav: BottomNavigationView,
-        context: Context,
-        currentPageIdx: Int
-    ) {
-        super.setUpMenuItemListener(bottomNav, context, currentPageIdx)
     }
 
     private fun setUpDatePickerListener(){

@@ -26,7 +26,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
-        scheduleList?.value?.get(position)?.let { holder.bind(it) }
+        scheduleList.value?.get(position)?.let { holder.bind(it) }
 
     }
 
@@ -35,9 +35,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
         notifyDataSetChanged()
     }
 
-    fun getData(): ArrayList<Schedule>? = scheduleList.value
-
-    override fun getItemCount(): Int = scheduleList?.value?.size ?: 0
+    override fun getItemCount(): Int = scheduleList.value?.size ?: 0
 
     class ScheduleViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val binding = ItemRowScheduleBinding.bind(itemView)
@@ -71,11 +69,11 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
                     binding.tvDescDate.text = buildDescDate
                 } else if (freq == "CUSTOM") {
                     val strs = item.days?.split(",")?.toTypedArray()
-                    val days = strs?.map { getDays.get(it) }
+                    val days = strs?.map { getDays[it] }
                     val DescDate = days.toString().replace("[", "").replace("]", "")
                     val buildDescDate = "Days on: $DescDate $startDate - $finalDate"
                     binding.tvDescDate.text = buildDescDate
-                } else if (freq.equals("EVERYDAY")) {
+                } else if (freq == "EVERYDAY") {
                     val buildDescDate = "Everyday on: $startDate - $finalDate"
                     binding.tvDescDate.text = buildDescDate
                 }
@@ -88,7 +86,7 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
                     binding.tvId.text = buildIds
                 }
                 binding.tvDistance.text = "Your Goal: $target m"
-                if (!mode.equals("RUNNING")) {
+                if (mode != "RUNNING") {
                     binding.ivImg.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_directions_bike_50))
                 }
 
@@ -98,11 +96,6 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>
     }
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: News)
-    }
-
-    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback
     }
 
 

@@ -7,8 +7,6 @@ import androidx.core.app.NotificationCompat
 import com.example.sportapp.Constant.Constant.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.sportapp.Constant.Constant.NOTIFICATION_CHANNEL_ID
 import com.example.sportapp.R
-import com.example.sportapp.UI.NewsActivity
-import com.example.sportapp.UI.RecyclingTrackerFragment
 import com.example.sportapp.UI.TrainingTrackerActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.Module

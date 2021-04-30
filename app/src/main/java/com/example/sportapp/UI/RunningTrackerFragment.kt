@@ -6,31 +6,31 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.sportapp.*
-import com.example.sportapp.Data.History
+import com.example.sportapp.HistoryModelFactory
+import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.Service.RunningTrackerService
+import com.example.sportapp.SportApp
 import com.example.sportapp.databinding.FragmentRunningTrackerBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.runBlocking
 
 class RunningTrackerFragment : Fragment() {
     companion object {
         const val EXTRA_STEPS = "steps"
         const val EXTRA_HISTORY= "extra history"
+        const val EXTRA_MODE="RUNNING"
 
     }
 
     private var isTraining: Boolean = false
     private var steps: Float = 0f
     private var binding: FragmentRunningTrackerBinding? = null
-    private var startDate: Calendar? = null
     private val historyViewModel: HistoryViewModel by viewModels {
         HistoryModelFactory((activity?.application as SportApp).historyDAO)
     }
@@ -63,7 +63,7 @@ class RunningTrackerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRunningTrackerBinding.inflate(inflater, container, false)
         trainingBtnListener()
         return binding!!.root
@@ -124,11 +124,18 @@ class RunningTrackerFragment : Fragment() {
                 binding?.tvProgress?.text = ""
                 binding?.btnTraining?.text = "Start Now"
                 Toast.makeText(context, "Saving training record", Toast.LENGTH_SHORT).show()
-                val history = historyViewModel.getLastHistory()
-                Log.d("history","${history.toString()}")
-                val intent = Intent(context,HistoryDetailTrainingActivity::class.java)
-                intent.putExtra(EXTRA_HISTORY,history)
-                startActivity(intent)
+                try {
+                    //val history = runBlocking {
+                    //    historyViewModel.getLastHistory()
+                    //}
+                    //Log.d("history","$history")
+                    val intent = Intent(context,HistoryDetailTrainingActivity::class.java)
+                    //intent.putExtra(EXTRA_HISTORY,history)
+                    //intent.putExtra(EXTRA_MODE,"RUNNING")
+                    startActivity(intent)
+                } catch (e: Error){
+                    Toast.makeText(context,e.message,Toast.LENGTH_SHORT)
+                }
             }
         }
     }

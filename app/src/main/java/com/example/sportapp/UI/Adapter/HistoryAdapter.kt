@@ -6,16 +6,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportapp.Data.History
-import com.example.sportapp.Data.News
 import com.example.sportapp.R
 import com.example.sportapp.databinding.ItemRowHistoryBinding
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
     private val historyList = MutableLiveData<ArrayList<History>>()
-    private lateinit var onItemClickCallback: HistoryAdapter.OnItemClickCallback
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
     interface OnItemClickCallback {
         fun onItemClicked(data: History)
@@ -28,7 +26,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        historyList?.value?.get(position)?.let { holder.bind(it) }
+        historyList.value?.get(position)?.let { holder.bind(it) }
         holder.itemView.setOnClickListener {
             historyList.value?.get(holder.layoutPosition)?.let { it1 ->
                 onItemClickCallback.onItemClicked(it1)
@@ -41,9 +39,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         notifyDataSetChanged()
     }
 
-    fun getData(): ArrayList<History>? = historyList.value
-
-    override fun getItemCount(): Int = historyList?.value?.size ?: 0
+    override fun getItemCount(): Int = historyList.value?.size ?: 0
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
@@ -73,7 +69,7 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
                 binding.tvDescDate.text = buildDescDate
                 binding.tvDistance.text = buildDistance
 
-                if (!mode.equals("RUNNING")) {
+                if (mode != "RUNNING") {
                     binding.ivImg.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_directions_bike_50))
                 }
             }
