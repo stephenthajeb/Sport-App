@@ -3,6 +3,7 @@ package com.example.sportapp.UI
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.ViewGroup
 import androidx.activity.viewModels

@@ -11,59 +11,82 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.sportapp.Data.History
+import com.example.sportapp.Data.HistoryDAO
+import com.example.sportapp.HistoryModelFactory
+import com.example.sportapp.HistoryViewModel
 import com.example.sportapp.R
+import com.example.sportapp.SportApp
+import com.example.sportapp.UI.SchedulerAddActivity
 import com.example.sportapp.UI.TrainingTrackerActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import java.lang.Math.abs
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RunningTrackerService : Service(), SensorEventListener {
-    private var sensorManager : SensorManager? = null
-    private var isForeground : Boolean = false
-    private var isTraining : Boolean = false
+    private var sensorManager: SensorManager? = null
+    private var isForeground: Boolean = false
+    private var isTraining: Boolean = false
+    private var steps: Float = 0f
+    private var startTime: String? = null
+    private var startDate: String? = null
 
-    companion object{
-        const val EXTRA_IS_FOREGROUND="isForeground"
-        const val EXTRA_IS_TRAINING="isTraining"
+    companion object {
+        const val EXTRA_IS_FOREGROUND = "isForeground"
+        const val EXTRA_IS_TRAINING = "isTraining"
         const val ACTION_TRACKING = "ACTION_TRACKING"
-        const val ACTION_STOP = "ACTION STOP"
-
         const val STEPS_TRACKED = "stepsTrack"
         const val NOTIF_TRACKING = 1
         const val TRAINING = "Training"
-        const val NOTIF_CHANNEL_NAME="Running Training"
+        const val NOTIF_CHANNEL_NAME = "Running Training"
         const val NOTIF_TRACKING_REQUEST_CODE = 200
     }
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("test","service start")
-        Toast.makeText(this,"Tracker service starts",Toast.LENGTH_SHORT).show()
+        Log.d("test", "service start")
+        Toast.makeText(this, "Tracker service starts", Toast.LENGTH_SHORT).show()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             isForeground = it.getBooleanExtra(EXTRA_IS_FOREGROUND, false)
-            isTraining = it.getBooleanExtra(EXTRA_IS_TRAINING,false)
+            isTraining = it.getBooleanExtra(EXTRA_IS_TRAINING, false)
         }
-        setSensors(on=true)
-        if (!isTraining){
-            Toast.makeText(this,"Tracker services stop",Toast.LENGTH_SHORT).show()
-            stopForeground(true)
+        setSensors(on = true)
+        if (!isTraining) {
+            Toast.makeText(this, "Tracker services stop", Toast.LENGTH_SHORT).show()
             stopSelf()
-            setSensors(on=false)
+            setSensors(on = false)
         }
+        val now = Calendar.getInstance()
+        startDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(now.time)
+        startTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(now.time)
         return START_STICKY
     }
 
-    private fun setSensors(on:Boolean){
+    private fun setSensors(on: Boolean) {
         sensorManager = getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
         val stepsSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         val dummySensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        if (on){
-            if (stepsSensor == null){
-                Toast.makeText(this, "Step Sensor not found. Activate Accelerometer", Toast.LENGTH_SHORT).show()
+        if (on) {
+            if (stepsSensor == null) {
+                Toast.makeText(
+                    this,
+                    "Step Sensor not found. Activate Accelerometer",
+                    Toast.LENGTH_LONG
+                ).show()
                 sensorManager?.registerListener(
                     this,
                     dummySensor,
@@ -79,8 +102,8 @@ class RunningTrackerService : Service(), SensorEventListener {
                 )
             }
         } else {
-            sensorManager?.unregisterListener(this,stepsSensor)
-            sensorManager?.unregisterListener(this,dummySensor)
+            sensorManager?.unregisterListener(this, stepsSensor)
+            sensorManager?.unregisterListener(this, dummySensor)
         }
     }
 
@@ -89,27 +112,26 @@ class RunningTrackerService : Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        if (event.sensor.type == Sensor.TYPE_STEP_COUNTER){
-            Log.d("service","step count")
-            val steps = event.values[0] //float
+        if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+            steps = event.values[0] //float
             val intent = Intent()
             intent.putExtra(STEPS_TRACKED, steps)
             intent.action = ACTION_TRACKING
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-            if (isForeground){
+            if (isForeground) {
                 val notification = createNotification(steps)
                 startForeground(NOTIF_TRACKING, notification)
             } else {
                 stopForeground(true)
             }
-        } else {
-            //Todo: delete this block later
-            val steps = event.values[0]
+        }
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) { //Dummy sensor
+            steps = kotlin.math.abs(event.values[0])
             val intent = Intent()
             intent.putExtra(STEPS_TRACKED, steps)
             intent.action = ACTION_TRACKING
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-            if (isForeground){
+            if (isForeground) {
                 val notification = createNotification(steps)
                 startForeground(NOTIF_TRACKING, notification)
             } else {
@@ -118,8 +140,12 @@ class RunningTrackerService : Service(), SensorEventListener {
         }
     }
 
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
     private fun createNotification(steps: Float): Notification {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val contentIntent = PendingIntent.getActivity(
             this, NOTIF_TRACKING_REQUEST_CODE, Intent(
@@ -128,7 +154,6 @@ class RunningTrackerService : Service(), SensorEventListener {
             ), PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        //Todo: configure notification builder later
         val notificationBuilder = NotificationCompat.Builder(baseContext, TRAINING)
             .setContentTitle(resources.getString(R.string.app_name))
             .setContentText("You have run $steps in this training")
@@ -146,21 +171,39 @@ class RunningTrackerService : Service(), SensorEventListener {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.enableVibration(true)
-            channel.setSound(null,null)
+            channel.setSound(null, null)
             channel.vibrationPattern = longArrayOf(1000, 1000, 1000, 1000, 1000)
             notificationBuilder.setChannelId(TRAINING)
             notificationManager.createNotificationChannel(channel)
-            //Todo: Set Dismissable gimana wkwk ?
         }
 
         return notificationBuilder.build()
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    override fun onDestroy() {
+        Toast.makeText(this, "Running tracker terminated",Toast.LENGTH_SHORT)
+        Log.d("test","destroying service")
+        stopForeground(true)
+        super.onDestroy()
+        val appScope = CoroutineScope(SupervisorJob())
+        appScope.launch(Dispatchers.IO) {
+            saveToHistoryDb()
+        }
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private suspend fun saveToHistoryDb() {
+        val history = History(
+            mode = SchedulerAddActivity.RUNNING,
+            result = steps,
+            date = startDate,
+            startTime = startTime,
+            endTime = SimpleDateFormat(
+                "HH:mm",
+                Locale.getDefault()
+            ).format(Calendar.getInstance().time)
+        )
+        (application as SportApp).historyDAO.insert(history)
     }
 
 }

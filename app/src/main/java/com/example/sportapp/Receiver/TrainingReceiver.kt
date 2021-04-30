@@ -27,33 +27,29 @@ import kotlin.collections.ArrayList
 class TrainingReceiver : BroadcastReceiver() {
     companion object {
         const val EXTRA_MESSAGE = "message"
-        const val EXTRA_NOTIF_TYPE = "type"
-        const val NOTIF_REMIND = "remind"
-        const val NOTIF_TRACKING = "tracking"
         const val EXTRA_NOTIF_ID = "notif id"
         const val NOTIF_TITLE = "Sport App"
         const val EXTRA_ICON = "icon"
-        const val EXTRA_SCHEDULE = "schedule"
         const val EXTRA_MODE = "mode"
         const val NOTIF_STOP_TRACKING = "stop tracking"
-        const val REQ_CODE_REMIND = 0
-        const val REQ_CODE_TRACKING = 1
-        const val REQ_CODE_STOP = 2
+        const val ACTION_TRACKING = "ACTION_TRACKING"
+        const val ACTION_STOP_TRACKING = "ACTION_STOP_TRACKING"
+        const val ACTION_REMIND = "ACTION_REMIND"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val notifType = intent.getStringExtra(EXTRA_NOTIF_TYPE)
+        val action = intent.action
         val notifMessage = intent.getStringExtra(EXTRA_MESSAGE)
         val notifIcon = intent.getIntExtra(EXTRA_ICON, -1)
         val notifId = intent.getIntExtra(EXTRA_NOTIF_ID, -1)
         val mode = intent.getStringExtra(EXTRA_MODE)
 
-        Log.d("test", "notifType $notifType")
-        if (notifType == NOTIF_REMIND && notifId != -1 && notifMessage != null && notifIcon != -1) {
+        Log.d("test", "notifType $action")
+        if (action == ACTION_REMIND && notifId != -1 && notifMessage != null && notifIcon != -1) {
             Log.d("test", "start notify")
             showReminderNotification(context, notifMessage, notifId)
         }
-        if (notifType == NOTIF_TRACKING && notifId != -1) {
+        if (action == ACTION_TRACKING && notifId != -1) {
             Log.d("test", "start traacking")
             if (mode == SchedulerAddActivity.RUNNING) {
                 val intent = Intent(context, RunningTrackerService::class.java)
@@ -68,17 +64,16 @@ class TrainingReceiver : BroadcastReceiver() {
             }
         }
 
-        if (notifType == NOTIF_STOP_TRACKING && notifId != -1) {
-            val trackingService =
-                if (mode == SchedulerAddActivity.RUNNING) RunningTrackerService::class.java else CyclingTrackerService::class.java
-            if (mode == SchedulerAddActivity.RUNNING){
-                val intent = Intent(context, trackingService)
-                intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, true)
-                intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
-                context.startService(intent)
-            }
-            else{
-                Intent(context, trackingService).also {
+        if (action == NOTIF_STOP_TRACKING && notifId != -1) {
+            Log.d("test", "stop traacking")
+            if (mode == SchedulerAddActivity.RUNNING) {
+                    val intent = Intent(context,RunningTrackerService::class.java)
+                    intent.putExtra(RunningTrackerService.EXTRA_IS_FOREGROUND, false)
+                    intent.putExtra(RunningTrackerService.EXTRA_IS_TRAINING, false)
+                    context.stopService(intent)
+
+            } else {
+                Intent(context, CyclingTrackerService::class.java).also {
                     it.action = ACTION_STOP_SERVICE
                     context.startService(it)
                 }
@@ -86,29 +81,30 @@ class TrainingReceiver : BroadcastReceiver() {
         }
     }
 
-    fun setTrackingNotification(context: Context, schedule: Schedule, isTestingMode: Boolean) {
+    fun setTrackingNotification(context: Context, schedule: Schedule, isTestingMode: Boolean, newId: Int) {
         /* Schedule start training */
         val intent = Intent(context, TrainingReceiver::class.java)
-        intent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_TRACKING)
-        intent.putExtra(EXTRA_NOTIF_ID, REQ_CODE_TRACKING)
+        intent.putExtra(EXTRA_NOTIF_ID, newId)
         intent.putExtra(EXTRA_MODE, schedule.mode)
-        val pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_TRACKING, intent, 0)
+        intent.action = ACTION_TRACKING
+        val pendingIntent = PendingIntent.getBroadcast(context, newId, intent,0)
         setUpAlarmManager(context, pendingIntent, schedule, isTestingMode, true)
 
         /* Schedule finish training */
         val stopIntent = Intent(context, TrainingReceiver::class.java)
-        stopIntent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_STOP_TRACKING)
-        stopIntent.putExtra(EXTRA_NOTIF_ID, REQ_CODE_STOP)
+        stopIntent.putExtra(EXTRA_NOTIF_ID, newId)
         stopIntent.putExtra(EXTRA_MODE, schedule.mode)
-        val stopPendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_STOP, stopIntent,0)
-        setUpAlarmManager(context, stopPendingIntent, schedule, isTestingMode, false)
+        stopIntent.action = ACTION_STOP_TRACKING
+        val stopPendingIntent = PendingIntent.getBroadcast(context, newId, stopIntent,0)
+        setUpAlarmManager(context, stopPendingIntent, schedule, isTestingMode=false, false)
     }
 
 
     fun setReminderNotification(
         context: Context,
         schedule: Schedule,
-        isTestingMode: Boolean
+        isTestingMode: Boolean,
+        newId: Int,
     ) {
         var message = ""
         var icon = -1
@@ -123,11 +119,11 @@ class TrainingReceiver : BroadcastReceiver() {
                 "You have a cycling training at ${schedule.startTime} - ${schedule.finishTime}"
         }
         val intent = Intent(context, TrainingReceiver::class.java)
-        intent.putExtra(EXTRA_NOTIF_TYPE, NOTIF_REMIND)
-        intent.putExtra(EXTRA_NOTIF_ID, REQ_CODE_REMIND)
+        intent.putExtra(EXTRA_NOTIF_ID, newId)
         intent.putExtra(EXTRA_MESSAGE, message)
         intent.putExtra(EXTRA_ICON, icon)
-        val pendingIntent = PendingIntent.getBroadcast(context, REQ_CODE_REMIND, intent, 0)
+        intent.action = ACTION_REMIND
+        val pendingIntent = PendingIntent.getBroadcast(context, newId, intent, 0)
         setUpAlarmManager(context, pendingIntent, schedule, isTestingMode, true)
     }
 
@@ -216,10 +212,12 @@ class TrainingReceiver : BroadcastReceiver() {
         schedule: Schedule,
         isStartSchedule: Boolean
     ): ArrayList<Calendar> {
-        val timeArr = if (isStartSchedule) schedule.startTime!!.split(":").map { it.toInt() }.toTypedArray()
-        else schedule.finishTime!!.split(":").map { it.toInt() }.toTypedArray()
+        val timeArr =
+            if (isStartSchedule) schedule.startTime!!.split(":").map { it.toInt() }.toTypedArray()
+            else schedule.finishTime!!.split(":").map { it.toInt() }.toTypedArray()
 
         val calendarList = ArrayList<Calendar>()
+        //Todo : validate if calendar instance has passed
         when (schedule.frequency) {
             SchedulerAddActivity.FREQ_ONCE -> {
                 val dateArr = schedule.date!!.split("-").map { it.toInt() }.toTypedArray()
