@@ -1,7 +1,7 @@
-## Tugas Besar Android - Sports App (IF3210)
+# Tugas Besar Android - Sports App (IF3210)
 
 
-### Deskripsi
+## Deskripsi
 Sports app adalah aplikasi berbasis android untuk menunjang aktivitas olahraga jogging/cycling dengan beberapa fitur berikut:
 - Sport News: Akses berita dengan tampilan web pada aplikasi
 - Training Tracker: User dapat melakukan jogging / cycling dan aplikasi dapat merekam rute olahraga yang dilakukan dan menghitung jarak tempuhnya
@@ -10,19 +10,19 @@ Sports app adalah aplikasi berbasis android untuk menunjang aktivitas olahraga j
 
 Aplikasi memerlukan minimal Android SDK 19 (Kitkat 4.4 keatas), dan dibuat dengan bahasa pemprograman kotlin.
 
-### Langkah Menjalankan Aplikasi 
+## Langkah Menjalankan Aplikasi 
 1.  Import repository pada android studio
 2.  Pilih device untuk dijalankan (Melalui AVD manager lalu jalankan emulator) atau menghubungkan device android dengan USB debugging
 3.  Untuk menjalankan klik tombol run sebelah opsi device yang dipilih
 
-### Library Yang di Pakai
+## Library Yang di Pakai
 - Library X: untuk ... 
 - {{ tambahkan bila ada }}
 
-### Screenshot Alplikasi
+## Screenshot Alplikasi
 {{ menyusul }}
 
-### Pembagian Kerja
+## Pembagian Kerja
 - 13518072 / Muchammad Ibnu Sidqi	
 	- {{ tambahkan }}
 - 13518102 / Mohamad Falah Sutawindaya
