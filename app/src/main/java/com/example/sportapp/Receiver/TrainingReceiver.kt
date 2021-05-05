@@ -10,6 +10,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.sportapp.Constant.Constant.ACTION_START_OR_RESUME_SERVICE
@@ -62,7 +63,7 @@ class TrainingReceiver : BroadcastReceiver() {
             }
         }
 
-        if (action == NOTIF_STOP_TRACKING && notifId != -1) {
+        if (action == ACTION_STOP_TRACKING && notifId != -1) {
             Log.d("test", "stop traacking")
             if (mode == SchedulerAddActivity.RUNNING) {
                     val intent = Intent(context,RunningTrackerService::class.java)
@@ -136,13 +137,13 @@ class TrainingReceiver : BroadcastReceiver() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendarList: ArrayList<Calendar> = getSchedulesCalendar(schedule, isStartSchedule)
 
-        if (isTestingMode) {
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis,
-                pendingIntent
-            )
-        } else {
+        //if (isTestingMode) {
+        //    alarmManager.set(
+        //        AlarmManager.RTC_WAKEUP,
+        //        Calendar.getInstance().timeInMillis,
+        //        pendingIntent
+        //    )
+        //} else {
             when (schedule.frequency) {
                 SchedulerAddActivity.FREQ_ONCE -> {
                     alarmManager.set(
@@ -170,7 +171,7 @@ class TrainingReceiver : BroadcastReceiver() {
                     }
                 }
             }
-        }
+        //}
     }
 
     //Todo: fix notification only shows the oldest notif.
